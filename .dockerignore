@@ -1,0 +1,17 @@
+build
+node_modules
+.svelte
+.svelte-kit
+.eslintrc*
+.gitignore
+.prettierignore
+docker-compose*
+Dockerfile
+downloadImage.js
+job.hcl
+LICENSE
+.env
+LICENSE
+README.md
+.gitlab-ci.yml
+job.hcl

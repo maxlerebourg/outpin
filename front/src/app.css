@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=Montez&display=swap");
+@import "tailwindcss";
+@plugin "daisyui";
+
+@theme {
+  --font-cookie: "Montez", sans-serif;
+}
+
+:root {
+  --color-primary: oklch(87% 0.15 154.449);
+  --color-primary-content: oklch(26% 0.065 152.934);
+  --color-secondary: oklch(80.53% 0.1109 19.78);
+  --color-secondary-content: oklch(26% 0.065 152.934);
+  --radius-field: 1rem;
+  --radius-box: 1rem;
+}
+
+html {
+  @apply bg-base-200 text-base-content;
+}
+
+h1 {
+  @apply font-cookie;
+}
+
+.marked h1 {
+  @apply text-4xl font-sans;
+}
+.marked h2 {
+  @apply text-3xl;
+}
+.marked h3 {
+  @apply text-2xl;
+}
+.marked h4 {
+  @apply text-xl;
+}
+.marked h5 {
+  @apply text-lg;
+}
+
+.marked a {
+  @apply text-accent underline;
+}
+
+.marked ul {
+  @apply list-disc pl-6;
+}
+.marked ol {
+  @apply list-decimal pl-6;
+}

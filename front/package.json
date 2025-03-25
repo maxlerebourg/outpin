@@ -1,0 +1,34 @@
+{
+  "name": "outpin",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vite dev --port=5173",
+    "build": "vite build",
+    "serve": "vite preview --port=5173",
+    "intl": "npx --yes tsx ./script/translate.ts --defaultLang=en",
+    "intl:check": "npm run intl && npx --yes tsx ./script/checkTranslate.ts --originLang=en",
+    "lint": "npx --yes @biomejs/biome format .",
+    "lint:fix": "npx --yes @biomejs/biome format --write ."
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "^3.0.8",
+    "@sveltejs/enhanced-img": "^0.4.4",
+    "@sveltejs/kit": "^2.20.0",
+    "@tailwindcss/typography": "^0.5.16",
+    "@tailwindcss/vite": "^4.0.14",
+    "daisyui": "^5.0.6",
+    "dompurify": "^3.2.4",
+    "marked": "^15.0.7",
+    "pocketbase": "^0.25.2",
+    "svelte": "^5.23.1",
+    "svelte-maplibre": "^1.0.0-next.12",
+    "tailwindcss": "^4.0.14",
+    "vite": "^6.2.2",
+    "zod": "^3.24.2"
+  }
+}
