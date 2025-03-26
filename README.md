@@ -6,7 +6,7 @@ OutPin offers a way to plan your future holidays by creating adventures and addi
 
 ## Installation
 
-Run the Docker image provided.
+Run the Docker image provided `ghcr.io/maxlerebourg/outpin`.
 
 The default port is 8090, but it can be overridden using the Docker CMD argument with `--http=http://0.0.0.0:9999`
 
@@ -35,11 +35,12 @@ PB_ADMIN_PASSWORD - Your superuser PocketBase password.
 ## Thanks
 
 Thanks to all the wonderful project that save me a lot of time:
-1. [PocketBase](https://pocketbase.io)
-2. [Tailwind](https://tailwindcss.com)
-3. [DaisyUI](https://daisyui.com)
-4. [SvelteKit](https://svelte.dev)
-5. [MapLibre](https://maplibre.org)
+- [SQLite](https://www.sqlite.org)
+- [PocketBase](https://pocketbase.io)
+- [Tailwind](https://tailwindcss.com)
+- [DaisyUI](https://daisyui.com)
+- [SvelteKit](https://svelte.dev)
+- [MapLibre](https://maplibre.org)
 
 
 ### About
