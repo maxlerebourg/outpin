@@ -27,16 +27,6 @@ jobs:
         with:
           fetch-depth: 0
       -
-        name: Find Git Tag
-        id: tagger
-        uses: jimschubert/query-tag-action@v2
-        with:
-          include: 'v*'
-          exclude: '*-rc*'
-          commit-ish: 'HEAD'
-          skip-unshallow: 'true'
-          abbrev: 7
-      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       -
