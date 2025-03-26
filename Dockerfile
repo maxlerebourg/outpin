@@ -1,4 +1,4 @@
-FROM alpine as builder
+FROM alpine AS builder
 
 ARG PB_VERSION=0.25.1
 ARG PB_PLATFORM=arm64
@@ -11,7 +11,7 @@ ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/po
 RUN unzip /tmp/pb.zip -d /pb/
 
 
-FROM node:lts-alpine as builder-front
+FROM node:lts-alpine AS builder-front
 
 ENV PUBLIC_POCKETBASE_URL="/"
 COPY front /front
