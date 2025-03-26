@@ -1,13 +1,13 @@
 FROM alpine AS builder
 
 ARG PB_VERSION=0.25.1
-ARG PB_PLATFORM
+ARG TARGETARCH
 
 RUN apk add --no-cache \
     unzip \
     ca-certificates
 
-ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_${PB_PLATFORM}.zip /tmp/pb.zip
+ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_${TARGETARCH}.zip /tmp/pb.zip
 RUN unzip /tmp/pb.zip -d /pb/
 
 
