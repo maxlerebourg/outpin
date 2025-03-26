@@ -1,7 +1,7 @@
 FROM alpine AS builder
 
 ARG PB_VERSION=0.25.1
-ARG PB_PLATFORM=arm64
+ARG PB_PLATFORM
 
 RUN apk add --no-cache \
     unzip \

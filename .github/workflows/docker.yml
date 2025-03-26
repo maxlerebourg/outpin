@@ -19,7 +19,11 @@ jobs:
     permissions:
       contents: read
       packages: write
-
+    
+    strategy:
+      matrix:
+        platform: [amd64, arm64]
+    
     steps:
       -
         name: Checkout
@@ -55,7 +59,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/${{ matrix.platform }}
           push: true
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
+          build-args: |
+            PB_PLATFORM=${{ matrix.platform }}
