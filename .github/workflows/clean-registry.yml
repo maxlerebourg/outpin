@@ -1,0 +1,26 @@
+name: GHCR Cleaner
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+
+    permissions:
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - uses: actions/delete-package-versions@v5
+        with: 
+          package-name: ${{ github.repository }}
+          package-type: 'container'
+          min-versions-to-keep: 5
+          delete-only-untagged-versions: 'true'
+          ignore-versions: '^(latest|v(\\.?\\d+){1,3})$'
