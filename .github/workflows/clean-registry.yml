@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
+      contents: read
       packages: write
 
     steps:
@@ -19,8 +20,8 @@ jobs:
         uses: actions/checkout@v4
       - uses: actions/delete-package-versions@v5.0.0
         with: 
-          owner: 'github'
-          package-name: ghcr.io/${{ github.repository }}
+          token: ${{ secrets.CLEAN_REGISTRY_PAT }}
+          package-name: ${{ github.repository }}
           package-type: 'container'
           min-versions-to-keep: 5
           delete-only-untagged-versions: 'true'
