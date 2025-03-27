@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
       packages: write
 
     steps:
@@ -20,7 +19,6 @@ jobs:
         uses: actions/checkout@v4
       - uses: actions/delete-package-versions@v5.0.0
         with: 
-          token: ${{ secrets.CLEAN_REGISTRY_PAT }}
           package-name: ${{ github.repository }}
           package-type: 'container'
           min-versions-to-keep: 5
