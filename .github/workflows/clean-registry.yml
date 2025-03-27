@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - uses: actions/delete-package-versions@v5
+      - uses: actions/delete-package-versions@v5.0.0
         with: 
           package-name: ${{ github.repository }}
           package-type: 'container'
