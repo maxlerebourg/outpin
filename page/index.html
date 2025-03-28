@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>OutPin - Plan and Relive Your Travels</title>
+  <link rel="icon" href="/favicon.ico">
+  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+  <style>
+    *,
+::before,
+::after {
+  --tw-border-spacing-x:0;
+  --tw-border-spacing-y:0;
+  --tw-translate-x:0;
+  --tw-translate-y:0;
+  --tw-rotate:0;
+  --tw-skew-x:0;
+  --tw-skew-y:0;
+  --tw-scale-x:1;
+  --tw-scale-y:1;
+  --tw-pan-x: ;
+  --tw-pan-y: ;
+  --tw-pinch-zoom: ;
+  --tw-scroll-snap-strictness:proximity;
+  --tw-gradient-from-position: ;
+  --tw-gradient-via-position: ;
+  --tw-gradient-to-position: ;
+  --tw-ordinal: ;
+  --tw-slashed-zero: ;
+  --tw-numeric-figure: ;
+  --tw-numeric-spacing: ;
+  --tw-numeric-fraction: ;
+  --tw-ring-inset: ;
+  --tw-ring-offset-width:0px;
+  --tw-ring-offset-color:#fff;
+  --tw-ring-color:rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow:0 0 #0000;
+  --tw-ring-shadow:0 0 #0000;
+  --tw-shadow:0 0 #0000;
+  --tw-shadow-colored:0 0 #0000;
+  --tw-blur: ;
+  --tw-brightness: ;
+  --tw-contrast: ;
+  --tw-grayscale: ;
+  --tw-hue-rotate: ;
+  --tw-invert: ;
+  --tw-saturate: ;
+  --tw-sepia: ;
+  --tw-drop-shadow: ;
+  --tw-backdrop-blur: ;
+  --tw-backdrop-brightness: ;
+  --tw-backdrop-contrast: ;
+  --tw-backdrop-grayscale: ;
+  --tw-backdrop-hue-rotate: ;
+  --tw-backdrop-invert: ;
+  --tw-backdrop-opacity: ;
+  --tw-backdrop-saturate: ;
+  --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: 
+}
+::backdrop {
+  --tw-border-spacing-x:0;
+  --tw-border-spacing-y:0;
+  --tw-translate-x:0;
+  --tw-translate-y:0;
+  --tw-rotate:0;
+  --tw-skew-x:0;
+  --tw-skew-y:0;
+  --tw-scale-x:1;
+  --tw-scale-y:1;
+  --tw-pan-x: ;
+  --tw-pan-y: ;
+  --tw-pinch-zoom: ;
+  --tw-scroll-snap-strictness:proximity;
+  --tw-gradient-from-position: ;
+  --tw-gradient-via-position: ;
+  --tw-gradient-to-position: ;
+  --tw-ordinal: ;
+  --tw-slashed-zero: ;
+  --tw-numeric-figure: ;
+  --tw-numeric-spacing: ;
+  --tw-numeric-fraction: ;
+  --tw-ring-inset: ;
+  --tw-ring-offset-width:0px;
+  --tw-ring-offset-color:#fff;
+  --tw-ring-color:rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow:0 0 #0000;
+  --tw-ring-shadow:0 0 #0000;
+  --tw-shadow:0 0 #0000;
+  --tw-shadow-colored:0 0 #0000;
+  --tw-blur: ;
+  --tw-brightness: ;
+  --tw-contrast: ;
+  --tw-grayscale: ;
+  --tw-hue-rotate: ;
+  --tw-invert: ;
+  --tw-saturate: ;
+  --tw-sepia: ;
+  --tw-drop-shadow: ;
+  --tw-backdrop-blur: ;
+  --tw-backdrop-brightness: ;
+  --tw-backdrop-contrast: ;
+  --tw-backdrop-grayscale: ;
+  --tw-backdrop-hue-rotate: ;
+  --tw-backdrop-invert: ;
+  --tw-backdrop-opacity: ;
+  --tw-backdrop-saturate: ;
+  --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: 
+}
+/* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com /, */
+::after,
+::before {
+  box-sizing:border-box;
+  border-width:0;
+  border-style:solid;
+  border-color:#e5e7eb
+}
+::after,
+::before {
+  --tw-content:''
+}
+:host,
+html {
+  line-height:1.5;
+  -webkit-text-size-adjust:100%;
+  -moz-tab-size:4;
+  tab-size:4;
+  font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-feature-settings:normal;
+  font-variation-settings:normal;
+  -webkit-tap-highlight-color:transparent
+}
+body {
+  margin:0;
+  line-height:inherit
+}
+hr {
+  height:0;
+  color:inherit;
+  border-top-width:1px
+}
+abbr:where([title]) {
+  -webkit-text-decoration:underline dotted;
+  text-decoration:underline dotted
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size:inherit;
+  font-weight:inherit
+}
+a {
+  color:inherit;
+  text-decoration:inherit
+}
+b,
+strong {
+  font-weight:bolder
+}
+code,
+kbd,
+pre,
+samp {
+  font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-feature-settings:normal;
+  font-variation-settings:normal;
+  font-size:1em
+}
+small {
+  font-size:80%
+}
+sub,
+sup {
+  font-size:75%;
+  line-height:0;
+  position:relative;
+  vertical-align:baseline
+}
+sub {
+  bottom:-.25em
+}
+sup {
+  top:-.5em
+}
+table {
+  text-indent:0;
+  border-color:inherit;
+  border-collapse:collapse
+}
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family:inherit;
+  font-feature-settings:inherit;
+  font-variation-settings:inherit;
+  font-size:100%;
+  font-weight:inherit;
+  line-height:inherit;
+  letter-spacing:inherit;
+  color:inherit;
+  margin:0;
+  padding:0
+}
+button,
+select {
+  text-transform:none
+}
+button,
+input:where([type=button]),
+input:where([type=reset]),
+input:where([type=submit]) {
+  -webkit-appearance:button;
+  background-color:transparent;
+  background-image:none
+}
+:-moz-focusring {
+  outline:auto
+}
+:-moz-ui-invalid {
+  box-shadow:none
+}
+progress {
+  vertical-align:baseline
+}
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height:auto
+}
+[type=search] {
+  -webkit-appearance:textfield;
+  outline-offset:-2px
+}
+::-webkit-search-decoration {
+  -webkit-appearance:none
+}
+::-webkit-file-upload-button {
+  -webkit-appearance:button;
+  font:inherit
+}
+summary {
+  display:list-item
+}
+blockquote,
+dd,
+dl,
+figure,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+p,
+pre {
+  margin:0
+}
+fieldset {
+  margin:0;
+  padding:0
+}
+legend {
+  padding:0
+}
+menu,
+ol,
+ul {
+  list-style:none;
+  margin:0;
+  padding:0
+}
+dialog {
+  padding:0
+}
+textarea {
+  resize:vertical
+}
+input::placeholder,
+textarea::placeholder {
+  opacity:1;
+  color:#9ca3af
+}
+[role=button],
+button {
+  cursor:pointer
+}
+:disabled {
+  cursor:default
+}
+audio,
+canvas,
+embed,
+iframe,
+img,
+object,
+svg,
+video {
+  display:block;
+  vertical-align:middle
+}
+img,
+video {
+  max-width:100%;
+  height:auto
+}
+[hidden]:where(:not([hidden=until-found])) {
+  display:none
+}
+.col-span-3 {
+  grid-column:span 3 / span 3
+}
+.col-span-6 {
+  grid-column:span 6 / span 6
+}
+.row-span-1 {
+  grid-row:span 1 / span 1
+}
+.row-span-2 {
+  grid-row:span 2 / span 2
+}
+.row-span-4 {
+  grid-row:span 4 / span 4
+}
+.mx-auto {
+  margin-left:auto;
+  margin-right:auto
+}
+.mb-1 {
+  margin-bottom:0.25rem
+}
+.mb-6 {
+  margin-bottom:1.5rem
+}
+.mr-2 {
+  margin-right:0.5rem
+}
+.mt-3 {
+  margin-top:0.75rem
+}
+.inline {
+  display:inline
+}
+.flex {
+  display:flex
+}
+.grid {
+  display:grid
+}
+.h-5 {
+  height:1.25rem
+}
+.max-h-56 {
+  max-height:14rem
+}
+.w-5 {
+  width:1.25rem
+}
+.w-full {
+  width:100%
+}
+.max-w-4xl {
+  max-width:56rem
+}
+.grid-cols-6 {
+  grid-template-columns:repeat(6, minmax(0, 1fr))
+}
+.grid-rows-4 {
+  grid-template-rows:repeat(4, minmax(0, 1fr))
+}
+.flex-col {
+  flex-direction:column
+}
+.flex-wrap {
+  flex-wrap:wrap
+}
+.items-center {
+  align-items:center
+}
+.justify-center {
+  justify-content:center
+}
+.justify-between {
+  justify-content:space-between
+}
+.gap-2 {
+  gap:0.5rem
+}
+.gap-4 {
+  gap:1rem
+}
+.gap-6 {
+  gap:1.5rem
+}
+.overflow-hidden {
+  overflow:hidden
+}
+.rounded-2xl {
+  border-radius:1rem
+}
+.rounded-xl {
+  border-radius:0.75rem
+}
+.bg-black {
+  --tw-bg-opacity:1;
+  background-color:rgb(0 0 0 / var(--tw-bg-opacity, 1))
+}
+.bg-gray-100 {
+  --tw-bg-opacity:1;
+  background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))
+}
+.bg-gray-200 {
+  --tw-bg-opacity:1;
+  background-color:rgb(229 231 235 / var(--tw-bg-opacity, 1))
+}
+.bg-gray-50 {
+  --tw-bg-opacity:1;
+  background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))
+}
+.bg-white {
+  --tw-bg-opacity:1;
+  background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))
+}
+.object-cover {
+  object-fit:cover
+}
+.p-3 {
+  padding:0.75rem
+}
+.p-4 {
+  padding:1rem
+}
+.p-6 {
+  padding:1.5rem
+}
+.px-4 {
+  padding-left:1rem;
+  padding-right:1rem
+}
+.py-2 {
+  padding-top:0.5rem;
+  padding-bottom:0.5rem
+}
+.py-6 {
+  padding-top:1.5rem;
+  padding-bottom:1.5rem
+}
+.pt-0 {
+  padding-top:0px
+}
+.text-center {
+  text-align:center
+}
+.text-3xl {
+  font-size:1.875rem;
+  line-height:2.25rem
+}
+.text-sm {
+  font-size:0.875rem;
+  line-height:1.25rem
+}
+.font-bold {
+  font-weight:700
+}
+.text-gray-500 {
+  --tw-text-opacity:1;
+  color:rgb(107 114 128 / var(--tw-text-opacity, 1))
+}
+.text-gray-600 {
+  --tw-text-opacity:1;
+  color:rgb(75 85 99 / var(--tw-text-opacity, 1))
+}
+.text-gray-700 {
+  --tw-text-opacity:1;
+  color:rgb(55 65 81 / var(--tw-text-opacity, 1))
+}
+.text-white {
+  --tw-text-opacity:1;
+  color:rgb(255 255 255 / var(--tw-text-opacity, 1))
+}
+.hover\:bg-gray-300:hover {
+  --tw-bg-opacity:1;
+  background-color:rgb(209 213 219 / var(--tw-bg-opacity, 1))
+}
+.hover\:bg-gray-800:hover {
+  --tw-bg-opacity:1;
+  background-color:rgb(31 41 55 / var(--tw-bg-opacity, 1))
+}
+@media (min-width: 768px) {
+  .md\:grid-cols-12 {
+    grid-template-columns:repeat(12, minmax(0, 1fr))
+  }
+}
+  </style>
+</head>
+
+<body class="bg-gray-50">
+  <div class="p-4 max-w-4xl mx-auto">
+    <main class="p-4 bg-gray-100 rounded-2xl gap-4 grid grid-cols-6 md:grid-cols-12 grid-rows-4">
+      <section class="bg-white p-4 py-6 rounded-xl flex flex-col gap-6 justify-between col-span-6 row-span-4">
+        <div>
+          <h1 class="gap-2 text-3xl font-bold mb-6">
+            <svg height="36px" width="36px" class="inline mb-1 mr-2" viewBox="0 0 512.032 512.032" xml:space="preserve">
+              <polygon fill="#ffa2a2" points="294.88,512.032 262.88,512.032 262.88,445.6 141.92,445.6 141.92,301.84 407.04,301.84 
+                407.04,219.376 246.64,219.376 246.64,187.376 439.04,187.376 439.04,333.84 173.92,333.84 173.92,413.6 294.88,413.6 "/>
+              <path fill="#7af1a7" d="M158.416,0c-51.904,0-85.424,34.736-85.424,88.496c0,44.8,67.28,134.752,74.96,144.816l10.448,13.824
+                l10.512-13.824c7.616-10.128,74.896-100.08,74.896-144.816C243.824,34.736,210.32,0,158.416,0z M158.352,116.784
+                c-15.28,0-27.664-12.4-27.664-27.696s12.384-27.696,27.664-27.696s27.664,12.4,27.664,27.696S173.632,116.784,158.352,116.784z"/>
+            </svg>
+            OutPin - Plan and Relive Your Travels
+          </h1>
+          <p class="text-gray-600 mb-6">Our open-source project helps you organize your adventures, save your
+            itineraries, and share your travel stories.</p>
+          <div class="flex gap-2">
+            <a href="https://github.com/maxlerebourg/outpin"
+              class="bg-black text-white p-3 rounded-xl hover:bg-gray-800 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.6.111.82-.261.82-.58 0-.287-.011-1.24-.017-2.246-3.338.725-4.042-1.614-4.042-1.614-.546-1.387-1.332-1.756-1.332-1.756-1.09-.745.083-.73.083-.73 1.204.085 1.838 1.237 1.838 1.237 1.07 1.833 2.809 1.303 3.495.996.109-.775.42-1.304.763-1.604-2.665-.303-5.466-1.332-5.466-5.932 0-1.31.469-2.38 1.237-3.22-.124-.303-.536-1.523.117-3.176 0 0 1.01-.324 3.305 1.23a11.51 11.51 0 0 1 3.006-.404c1.02.004 2.045.137 3.005.404 2.294-1.554 3.302-1.23 3.302-1.23.655 1.653.243 2.873.12 3.176.77.84 1.236 1.91 1.236 3.22 0 4.61-2.804 5.625-5.476 5.922.43.37.817 1.102.817 2.222 0 1.605-.014 2.897-.014 3.291 0 .321.216.694.825.577C20.565 21.796 24 17.298 24 12c0-6.627-5.373-12-12-12z" />
+              </svg>
+              <span>GitHub</span>
+            </a>
+            <a href="https://outpin.lerebourg.eu" target="_blank"
+              class="bg-gray-200 text-gray-700 py-2 px-4 rounded-xl hover:bg-gray-300 flex items-center">Demo</a>
+          </div>
+        </div>
+        <div class="text-gray-500 text-sm">
+          <p>Used by travel enthusiasts</p>
+          <ul class="flex flex-wrap gap-2 mt-3">
+            <li>Globetrotters</li>
+            <li>Digital Nomads</li>
+            <li>Adventurers</li>
+            <li>Explorers</li>
+          </ul>
+        </div>
+      </section>
+      <section class="bg-white rounded-xl justify-center col-span-3 row-span-2 flex flex-col">
+        <img src="https://cdn.pixabay.com/photo/2017/06/08/17/52/compass-2384365_1280.png" alt="Travel Journal">
+        <p class="text-gray-600 p-6 pt-0 text-center">Travel journal for globetrotters</p>
+      </section>
+      <section class="bg-white p-4 rounded-xl col-span-3 row-span-1 text-center flex flex-col justify-center">
+        <p class="text-gray-600">Planned Trips</p>
+        <p class="text-3xl font-bold">150+</p>
+      </section>
+      <section class="bg-white p-4 rounded-xl col-span-3 row-span-1 text-center flex flex-col justify-center">
+        <p class="text-gray-600">Stars</p>
+        <p class="text-3xl font-bold">300+</p>
+      </section>
+      <section class="bg-white rounded-xl col-span-6 row-span-2 overflow-hidden">
+        <img src="https://cdn.pixabay.com/photo/2017/09/04/16/58/passport-2714675_1280.jpg" alt="Travel Planning"
+          class="w-full max-h-56 object-cover">
+      </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -19,6 +19,7 @@ WORKDIR /front
 RUN npm i
 RUN npm run build
 
+
 FROM alpine
 
 RUN mkdir /pb
