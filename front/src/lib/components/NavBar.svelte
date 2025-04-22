@@ -16,8 +16,6 @@ function toggleDarkMode() {
 }
 function changeLang(lang: Locale) {
   localeStore.set(lang)
-  const langInput = document.getElementById('lang') as HTMLInputElement
-  if (langInput) langInput.checked = false
 }
 
 onMount(() => {
@@ -76,21 +74,24 @@ onDestroy(() => {
 					</label>
 				</li>
 				<li>
-					<label for="lang" class="btn btn-ghost btn-square relative">
-						<input id="lang" type="checkbox" class="peer hidden">
-						<Icon icon="locale" _class="w-6 h-6" />
-						<div class="card flex-row absolute bg-base-300 z-100 top-0 right-full hidden peer-checked:flex">
-							{#each Object.values(Locale) as lang}
-								<button
-									type="button"
-									class="btn btn-ghost btn-square {locale === lang ? 'hidden' : ''}"
-									onclick={() => changeLang(lang)}
-								>
-									{lang}
-								</button>
-							{/each}
+					<div class="dropdown dropdown-left">
+						<div tabindex="0" role="button" class="btn btn-ghost btn-square">
+							<Icon icon="locale" _class="w-6 h-6" />
 						</div>
-					</label>
+						<ul class="dropdown-content card bg-base-300 flex-row z-100">
+							{#each Object.values(Locale) as lang}
+								<li>
+									<button
+										type="button"
+										class="btn btn-ghost btn-square {locale === lang ? 'hidden' : ''}"
+										onclick={() => changeLang(lang)}
+									>
+										{lang}
+									</button>
+								</li>
+							{/each}
+						</ul>
+					</div>
 				</li>
 			</ul>
 		</div>

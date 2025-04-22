@@ -50,13 +50,19 @@ onDestroy(adventuresUnsubscribe)
         goto('/adventures')
       }}
     >
-      {$t('adventures.id.delete', { defaultValue: 'delete' })}
+      {$t('adventures.id.delete', { defaultValue: 'Delete' })}
     </button>
     <a
       class="btn btn-ghost btn-xs"
       href="/?{new URLSearchParams({ adventure_id: page.params.id }).toString()}"
     >
-      {$t('adventures.id.modify', { defaultValue: 'modify' })}
+      {$t('adventures.id.modify', { defaultValue: 'Modify' })}
+    </a>
+    <a
+      class="btn btn-ghost btn-xs"
+      href="/adventures/{adventure.id}/organization"
+    >
+      {$t('adventures.id.organization', { defaultValue: 'Organization' })}
     </a>
   </div>
   <MarkupEditor

@@ -12,6 +12,12 @@ import {
   postVisitSchema,
   patchAdventureSchema,
   patchVisitSchema,
+  postActivitySchema,
+  patchActivitySchema,
+  postLodgingSchema,
+  patchLodgingSchema,
+  postTransportationSchema,
+  patchTransportationSchema,
 } from './schemas'
 import { adventuresStore, categoriesStore } from './store'
 
@@ -43,10 +49,16 @@ export class ApiClass {
   adventures = this.pb.collection<Adventure>('adventures')
   categories = this.pb.collection<Category>('categories')
   visits = this.pb.collection<Visit>('visits')
+  activities = this.pb.collection<Activity>('activities')
+  lodgings = this.pb.collection<Lodging>('lodgings')
+  transportations = this.pb.collection<Transportation>('transportations')
 
   adventuresResponse: Adventure[] = []
   visitsResponse: Visit[] = []
   categoriesResponse: Category[] = []
+  activitiesResponse: Activity[] = []
+  lodgingsResponse: Lodging[] = []
+  transportationsResponse: Transportation[] = []
 
   async getGeocodingReverse(lngLat: LngLat): Promise<Address> {
     return await this.pb.send<Address>('/api/geocoding/reverse', {
@@ -152,20 +164,38 @@ export class ApiClass {
   }
 
   async reloadAdventures() {
-    const adventures = await this.getUserAdventures()
-    this.adventuresResponse = adventures
+    const items = await this.getUserAdventures()
+    this.adventuresResponse = items
     this.computeStore()
   }
 
   async reloadCategories() {
-    const categories = await this.getUserCategories()
-    this.categoriesResponse = categories
+    const items = await this.getUserCategories()
+    this.categoriesResponse = items
     this.computeStore()
   }
 
   async reloadVisits() {
-    const visits = await this.getUserVisits()
-    this.visitsResponse = visits
+    const items = await this.getUserVisits()
+    this.visitsResponse = items
+    this.computeStore()
+  }
+
+  async reloadActivities() {
+    const items = await this.getUserActivities()
+    this.activitiesResponse = items
+    this.computeStore()
+  }
+
+  async reloadLodgings() {
+    const items = await this.getUserLodgings()
+    this.lodgingsResponse = items
+    this.computeStore()
+  }
+
+  async reloadTransportations() {
+    const items = await this.getUserTransportations()
+    this.transportationsResponse = items
     this.computeStore()
   }
 
@@ -195,9 +225,6 @@ export class ApiClass {
     const categoryById = this.categoriesResponse.reduce<
       Record<string, Category>
     >((acc, cat) => ({ ...acc, [cat.id]: cat }), {})
-    const adventureById = this.adventuresResponse.reduce<
-      Record<string, Adventure>
-    >((acc, adv) => ({ ...acc, [adv.id]: adv }), {})
 
     const now = new Date().toISOString().split('T')[0]
     const computedVisits = this.visitsResponse
@@ -207,6 +234,33 @@ export class ApiClass {
       }))
       .sort((a: Visit, b: Visit) => a.order - b.order)
     const visitByAdventureId = computedVisits.reduce<Record<string, Visit[]>>(
+      (acc, visit) => {
+        ;(acc[visit.adventure_id] ??= []).push(visit)
+        return acc
+      },
+      {},
+    )
+    const activityByAdventureId = this.activitiesResponse.reduce<
+      Record<string, Activity[]>
+    >(
+      (acc, visit) => {
+        ;(acc[visit.adventure_id] ??= []).push(visit)
+        return acc
+      },
+      {},
+    )
+    const lodgingByAdventureId = this.lodgingsResponse.reduce<
+      Record<string, Lodging[]>
+    >(
+      (acc, visit) => {
+        ;(acc[visit.adventure_id] ??= []).push(visit)
+        return acc
+      },
+      {},
+    )
+    const transportationByAdventureId = this.transportationsResponse.reduce<
+      Record<string, Transportation[]>
+    >(
       (acc, visit) => {
         ;(acc[visit.adventure_id] ??= []).push(visit)
         return acc
@@ -250,12 +304,15 @@ export class ApiClass {
         }
         return {
           ...formatAdventure(a),
-          visits,
           end_date: a.start_date
             ? currentDate?.toISOString().split('T')[0]
             : null,
           day_duration,
           category: categoryById[a.category_id ?? ''] ?? null,
+          visits,
+          activities: activityByAdventureId[a.id ?? ''] ?? [],
+          lodgings: lodgingByAdventureId[a.id ?? ''] ?? [],
+          transportations: transportationByAdventureId[a.id ?? ''] ?? [],
         }
       }),
     )
@@ -271,6 +328,18 @@ export class ApiClass {
 
   getUserVisits() {
     return this.visits.getFullList()
+  }
+
+  getUserActivities() {
+    return this.activities.getFullList()
+  }
+
+  getUserLodgings() {
+    return this.lodgings.getFullList()
+  }
+
+  getUserTransportations() {
+    return this.transportations.getFullList()
   }
 
   async deleteAdventure(data: { id: string }) {
@@ -346,7 +415,6 @@ export class ApiClass {
 
   async postVisit(data: Visit) {
     const { formData, errors } = validateData(data, postVisitSchema)
-    console.log(errors, formData)
     if (errors) throw new FormError(errors.fieldErrors)
     try {
       const visit = await this.visits.create({
@@ -384,6 +452,130 @@ export class ApiClass {
       })
       await this.reloadVisits()
       return formatVisit(visit)
+    } catch (err: any) {
+      throw new FormError({ error: err.response.message })
+    }
+  }
+
+  async postActivity(data: Activity) {
+    const { formData, errors } = validateData(data, postActivitySchema)
+    if (errors) throw new FormError(errors.fieldErrors)
+    try {
+      const activity = await this.activities.create({
+        adventure_id: formData.adventure_id,
+        location: formData.location,
+        name: formData.name,
+        cost: formData.cost,
+        at: formData.at,
+      })
+      await this.reloadActivities()
+      return activity
+    } catch (err: any) {
+      throw new FormError({ error: err.response.message })
+    }
+  }
+
+  async patchActivity(data: Partial<Activity>) {
+    const { formData, errors } = validateData(data, patchActivitySchema)
+    if (errors) throw new FormError(errors.fieldErrors)
+    try {
+      const activity = await this.visits.update(formData.id, {
+        adventure_id: formData.adventure_id,
+        category_id: formData.category_id,
+        day_duration: formData.day_duration,
+        notes: formData.notes,
+        location: formData.location,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+        rating: formData.rating,
+        order: formData.order,
+      })
+      await this.reloadActivities()
+      return activity
+    } catch (err: any) {
+      throw new FormError({ error: err.response.message })
+    }
+  }
+
+  async postLodging(data: Lodging) {
+    const { formData, errors } = validateData(data, postLodgingSchema)
+    if (errors) throw new FormError(errors.fieldErrors)
+    try {
+      const lodging = await this.lodgings.create({
+        adventure_id: formData.adventure_id,
+        location: formData.location,
+        company: formData.company,
+        reservation: formData.reservation,
+        cost: formData.cost,
+        from_at: formData.from_at,
+        to_at: formData.to_at,
+      })
+      await this.reloadLodgings()
+      return lodging
+    } catch (err: any) {
+      throw new FormError({ error: err.response.message })
+    }
+  }
+
+  async patchLodging(data: Partial<Lodging>) {
+    const { formData, errors } = validateData(data, patchLodgingSchema)
+    if (errors) throw new FormError(errors.fieldErrors)
+    try {
+      const lodging = await this.lodgings.update(formData.id, {
+        adventure_id: formData.adventure_id,
+        location: formData.location,
+        company: formData.company,
+        reservation: formData.reservation,
+        cost: formData.cost,
+        from_at: formData.from_at,
+        to_at: formData.to_at,
+      })
+      await this.reloadLodgings()
+      return lodging
+    } catch (err: any) {
+      throw new FormError({ error: err.response.message })
+    }
+  }
+
+  async postTransportation(data: Transportation) {
+    const { formData, errors } = validateData(data, postTransportationSchema)
+    if (errors) throw new FormError(errors.fieldErrors)
+    try {
+      const transportation = await this.transportations.create({
+        adventure_id: formData.adventure_id,
+        type: formData.type,
+        company: formData.company,
+        reservation: formData.reservation,
+        cost: formData.cost,
+        from: formData.from,
+        from_at: formData.from_at,
+        to: formData.to,
+        to_at: formData.to_at,
+      })
+      await this.reloadTransportations()
+      return transportation
+    } catch (err: any) {
+      throw new FormError({ error: err.response.message })
+    }
+  }
+
+  async patchTransportation(data: Partial<Transportation>) {
+    const { formData, errors } = validateData(data, patchTransportationSchema)
+    if (errors) throw new FormError(errors.fieldErrors)
+    try {
+      const transportation = await this.transportations.update(formData.id, {
+        adventure_id: formData.adventure_id,
+        type: formData.type,
+        company: formData.company,
+        reservation: formData.reservation,
+        cost: formData.cost,
+        from: formData.from,
+        from_at: formData.from_at,
+        to: formData.to,
+        to_at: formData.to_at,
+      })
+      await this.reloadTransportations()
+      return transportation
     } catch (err: any) {
       throw new FormError({ error: err.response.message })
     }

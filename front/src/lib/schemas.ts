@@ -67,6 +67,27 @@ export const postCategorySchema = z.object({
   icon: z.string().min(1).max(4).nullable(),
 })
 
+export const postAdventureSchema = z.object({
+  name: z.string({ required_error: 'Name is required' }).min(3).max(200),
+  description: z.string().nullable(),
+  start_date: zDate().nullable(),
+  rating: z.number().min(0).max(5).nullable(),
+  category_id: zCategoryId().nullable(),
+})
+
+export const patchAdventureSchema = z.object({
+  id: z.string().min(1).max(200),
+  name: z
+    .string({ required_error: 'Name is required' })
+    .min(3)
+    .max(200)
+    .optional(),
+  start_date: zDate().nullable().optional(),
+  description: z.string().nullable().optional(),
+  rating: z.number().min(0).max(5).nullable().optional(),
+  category_id: zCategoryId().nullable().optional(),
+})
+
 export const postVisitSchema = z.object({
   adventure_id: z.string().min(1).max(200),
   category_id: zCategoryId().nullable(),
@@ -99,23 +120,65 @@ export const patchVisitSchema = z.object({
   order: z.number().min(0).max(100).optional(),
 })
 
-export const postAdventureSchema = z.object({
-  name: z.string({ required_error: 'Name is required' }).min(3).max(200),
-  description: z.string().nullable(),
-  start_date: zDate().nullable(),
-  rating: z.number().min(0).max(5).nullable(),
-  category_id: zCategoryId().nullable(),
+export const postActivitySchema = z.object({
+  name: z.string().min(3).max(200),
+  adventure_id: z.string().min(1).max(200),
+  location: z.string().nullable(),
+  cost: z.number().min(0).nullable(),
+  at: zDate().nullable(),
 })
 
-export const patchAdventureSchema = z.object({
+export const patchActivitySchema = z.object({
   id: z.string().min(1).max(200),
-  name: z
-    .string({ required_error: 'Name is required' })
-    .min(3)
-    .max(200)
-    .optional(),
-  start_date: zDate().nullable().optional(),
-  description: z.string().nullable().optional(),
-  rating: z.number().min(0).max(5).nullable().optional(),
-  category_id: zCategoryId().nullable().optional(),
+  adventure_id: z.string().min(1).max(200),
+  name: z.string().max(200).nullable().optional(),
+  location: z.string().nullable().optional(),
+  cost: z.number().min(0).max(5).nullable().optional(),
+  at: zDate().nullable().optional(),
+})
+
+export const postLodgingSchema = z.object({
+  adventure_id: z.string().min(1).max(200),
+  location: z.string().max(200).nullable(),
+  company: z.string().max(200).nullable(),
+  reservation: z.string().max(200).nullable(),
+  cost: z.number().min(0).nullable(),
+  from_at: zDate().nullable(),
+  to_at: zDate().nullable(),
+})
+
+export const patchLodgingSchema = z.object({
+  id: z.string().min(1).max(200),
+  adventure_id: z.string().min(1).max(200),
+  location: z.string().max(200).nullable(),
+  company: z.string().max(200).nullable().optional(),
+  reservation: z.string().max(200).nullable().optional(),
+  cost: z.number().min(0).nullable().optional(),
+  from_at: zDate().nullable().optional(),
+  to_at: zDate().nullable().optional(),
+})
+
+export const postTransportationSchema = z.object({
+  adventure_id: z.string().min(1).max(200),
+  company: z.string().max(200).nullable(),
+  reservation: z.string().max(200).nullable(),
+  type: z.enum(['car', 'boat', 'velo', 'bus', 'flight', 'train']),
+  cost: z.number().min(0).nullable(),
+  from: z.string().max(200).nullable(),
+  from_at: zDate().nullable(),
+  to: z.string().max(200).nullable(),
+  to_at: zDate().nullable(),
+})
+
+export const patchTransportationSchema = z.object({
+  id: z.string().min(1).max(200),
+  adventure_id: z.string().min(1).max(200),
+  company: z.string().max(200).nullable().optional(),
+  reservation: z.string().max(200).nullable().optional(),
+  type: z.enum(['car', 'boat', 'velo', 'bus', 'flight', 'train']).optional(),
+  cost: z.number().min(0).nullable().optional(),
+  from: z.string().max(200).nullable().optional(),
+  from_at: zDate().nullable().optional(),
+  to: z.string().max(200).nullable().optional(),
+  to_at: zDate().nullable().optional(),
 })

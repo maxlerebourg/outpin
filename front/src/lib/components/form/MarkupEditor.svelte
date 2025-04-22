@@ -73,26 +73,24 @@ function useKeyCombinations(
   event.target?.addEventListener('keydown', (evt) => {
     const keyEvent = evt as KeyboardEvent
     keysPressed[keyEvent.key] = true
-
-    if (keysPressed['Control'] || keysPressed['Meta']) {
-      evt.preventDefault()
-      evt.stopPropagation()
+    if (keysPressed.Control || keysPressed.Meta) {
       switch (keyEvent.key) {
         case 'b':
+          evt.preventDefault()
           addBoldCommand(contentTextArea)
           break
         case 'i':
+          evt.preventDefault()
           addItalicCommand(contentTextArea)
           break
         case 'k':
+          evt.preventDefault()
           addLinkCommand(contentTextArea)
           break
       }
     }
   })
-  event.target?.addEventListener('keyup', (e) => {
-    delete keysPressed[(e as KeyboardEvent).key]
-  })
+  event.target?.addEventListener('keyup', (e) => (keysPressed[(e as KeyboardEvent).key] = false))
 }
 async function throttle(contentTextArea?: HTMLTextAreaElement) {
   clearTimeout(timeout)
@@ -163,9 +161,8 @@ function addHeadingCommand(
     updateTextAreaValue(contentTextArea, text, hNumber + 2, 4)
   }
 }
-
-export const addCodeBlockCommand = (contentTextArea?: HTMLTextAreaElement) => {
-  const text = '```language\ntext\n```\n'
+function addCodeBlockCommand(contentTextArea?: HTMLTextAreaElement) {
+  const text = '\n```language\ntext\n```\n'
   if (contentTextArea && contentTextArea.value.indexOf(text) !== -1) {
     contentTextArea.value = contentTextArea.value.replace(text, '')
   } else {
@@ -183,9 +180,7 @@ async function resetCommand(contentTextArea?: HTMLTextAreaElement) {
   throttle(contentTextArea)
 }
 
-onMount(() => {
-  handlePreview(false)
-})
+onMount(() => handlePreview(false))
 </script>
 
 <div class="min-h-10">
