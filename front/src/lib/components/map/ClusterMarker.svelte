@@ -13,7 +13,10 @@ import { adventuresStore } from '$lib/store'
 import Rating from '../form/Rating.svelte'
 
 const { map } = $derived(getMapContext())
-let { center, onMoveEnd } = $props<{ center: [number, number], onMoveEnd: (e: LngLat) => void }>()
+let { center, onMoveEnd } = $props<{
+  center: [number, number]
+  onMoveEnd: (e: LngLat) => void
+}>()
 
 let innerFeaturesPromise = $derived.by(async () => {
   if (!map) return {}
