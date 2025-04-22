@@ -98,7 +98,7 @@ export class ApiClass {
 
   async register(data: Auth) {
     const { formData, errors } = validateData(data, registerUserSchema)
-    if (errors) throw new FormError(errors)
+    if (errors) throw new FormError(errors.fieldErrors)
     const emailHandle = formData.email?.split('@')[0].toLowerCase() ?? ''
     const randomDigits = Math.floor(1000 + Math.random() * 8999) // Generate random 4 digit number
     const username = `${emailHandle}${randomDigits}`
@@ -117,7 +117,7 @@ export class ApiClass {
 
   async patchUserEmail(data: { email: string }) {
     const { formData, errors } = validateData(data, patchEmailSchema)
-    if (errors) throw new FormError(errors)
+    if (errors) throw new FormError(errors.fieldErrors)
     try {
       await this.users.requestEmailChange(formData.email)
     } catch (err: any) {
@@ -127,7 +127,7 @@ export class ApiClass {
 
   async patchUserUsername(data: { username: string }) {
     const { formData, errors } = validateData(data, patchUsernameSchema)
-    if (errors) throw new FormError(errors)
+    if (errors) throw new FormError(errors.fieldErrors)
     try {
       await this.users.update(this.pb.authStore.record?.id ?? '', {
         name: formData.username,
@@ -139,7 +139,7 @@ export class ApiClass {
 
   async patchUserPassword(data: { oldPassword: string; password: string }) {
     const { formData, errors } = validateData(data, patchPasswordSchema)
-    if (errors) throw new FormError(errors)
+    if (errors) throw new FormError(errors.fieldErrors)
     try {
       await this.users.update(this.pb.authStore.record?.id ?? '', {
         ...formData,
