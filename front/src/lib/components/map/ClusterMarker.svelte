@@ -6,13 +6,17 @@ import {
   LineLayer,
   MarkerLayer,
   Popup,
+  MapEvents,
 } from 'svelte-maplibre'
 import { t } from '$lib/i18n'
 import { adventuresStore } from '$lib/store'
 import Rating from '../form/Rating.svelte'
 
 const { map } = $derived(getMapContext())
-let { center } = $props<{ center: [number, number] } | null>()
+let { center, onMoveEnd } = $props<{
+  center: [number, number]
+  onMoveEnd: (e: LngLat) => void
+}>()
 
 let innerFeaturesPromise = $derived.by(async () => {
   if (!map) return {}
@@ -65,6 +69,10 @@ $effect(() => {
   map.flyTo({ center })
 })
 
+function onMove() {
+  onMoveEnd(map.getCenter())
+}
+
 let lines = $state<any>({ type: 'FeatureCollection', features: [] })
 let points = $state<any>({ type: 'FeatureCollection', features: [] })
 let adventures = $state<Adventure[]>([])
@@ -74,6 +82,7 @@ const adventuresUnsubscribe = adventuresStore.subscribe((v) => {
 onDestroy(adventuresUnsubscribe)
 </script>
 
+<MapEvents onmoveend={onMove} />
 <GeoJSON id="lines" data={lines}>
   <LineLayer
     layout={{ 'line-cap': 'round', 'line-join': 'round' }}
