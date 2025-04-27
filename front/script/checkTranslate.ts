@@ -66,7 +66,7 @@ function checkJsonFiles(directory: string, originalFileName: string) {
 const directory = `${process.cwd()}/static/lang`
 const originLocale =
   process.argv
-    .find((a: string) => a.startsWith('--originLang='))
+    .find((a: string) => a.startsWith('--origin-lang='))
     ?.split('=')[1] ?? 'en'
 const originFileName = `${originLocale}.json`
 try {

@@ -13,9 +13,10 @@ const DEFAULT_VALUE = $t('markup-editor.default-value', {
 
 // Thanks to https://github.com/Sirneij/devto-editor-clone
 let contentText = $state<HTMLTextAreaElement>()
-let { contentValue = DEFAULT_VALUE, save } = $props<{
+let { contentValue = DEFAULT_VALUE, isEditable = false, onSave } = $props<{
   contentValue?: string
-  save: (s: string) => Promise<void>
+  isEditable?: boolean
+  onSave: (s: string) => Promise<void>
 }>()
 let showPreview = $state(true)
 let markup = $state('')
@@ -90,12 +91,15 @@ function useKeyCombinations(
       }
     }
   })
-  event.target?.addEventListener('keyup', (e) => (keysPressed[(e as KeyboardEvent).key] = false))
+  event.target?.addEventListener(
+    'keyup',
+    (e) => (keysPressed[(e as KeyboardEvent).key] = false),
+  )
 }
 async function throttle(contentTextArea?: HTMLTextAreaElement) {
   clearTimeout(timeout)
   timeout = setTimeout(async () => {
-    if (Date.now() - lastDate > 1000) await save(contentTextArea?.value)
+    if (Date.now() - lastDate > 1000) await onSave(contentTextArea?.value)
   }, 2000)
   lastDate = Date.now()
 }
@@ -183,105 +187,112 @@ async function resetCommand(contentTextArea?: HTMLTextAreaElement) {
 onMount(() => handlePreview(false))
 </script>
 
-<div class="min-h-10">
-  <div class="card menu menu-horizontal w-full mb-2 {showPreview ? '' : 'bg-base-300'}">
+<div class="min-h-12">
+  {#if isEditable}
+    <div class="card menu menu-horizontal w-full mb-2 {showPreview ? '' : 'bg-base-300'}">
+      {#if !showPreview}
+        <button
+          type="button"
+          class="btn btn-ghost btn-square btn-sm tooltip"
+          data-tip="Bold [Cmd/Ctrl(Shift) + B]"
+          onclick={() => addBoldCommand(contentText)}
+        >
+          <b>b</b>
+        </button>
+        <button
+          type="button"
+          class="btn btn-ghost btn-square btn-sm tooltip"
+          data-tip="Italics [Cmd/Ctrl(Shift) + I]"
+          onclick={() => addItalicCommand(contentText)}
+        >
+          <i>i</i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-ghost btn-square btn-sm tooltip"
+          data-tip="Add link [Cmd/Ctrl(Shift) + K]"
+          onclick={() => addLinkCommand(contentText)}
+        >
+          @
+        </button>
+        <button
+          type="button"
+          class="btn btn-ghost btn-square btn-sm tooltip"
+          data-tip="Add unordered list"
+          onclick={() => addUnorderedListCommand(contentText)}
+        >
+          •••
+        </button>
+        <button
+          type="button"
+          class="btn btn-ghost btn-square btn-sm tooltip"
+          data-tip="Add ordered list"
+          onclick={() => addOrderedListCommand(contentText)}
+        >
+          123
+        </button>
+        <div class="flex">
+          <input id="peer" type="checkbox" class="peer hidden"/>
+          <label for="peer" class="btn btn-square btn-sm btn-ghost peer-checked:hidden">h›</label>
+          <label for="peer" class="btn btn-square btn-sm hidden peer-checked:flex">h‹</label>
+          {#each [2, 3, 4, 5, 6] as hNumber}
+            <button
+              type="button"
+              class="btn btn-ghost btn-square btn-sm hidden peer-checked:flex"
+              onclick={() => addHeadingCommand(contentText, hNumber)}
+            >
+              h{hNumber}
+            </button>
+          {/each}
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-ghost btn-square btn-sm tooltip"
+          data-tip="Code block command"
+          onclick={() => addCodeBlockCommand(contentText)}
+        >
+          ‹ ›
+        </button>
+        <button type="button" class="btn btn-sm px-1" onclick={() => resetCommand(contentText)}>
+          reset
+        </button>
+      {/if}
+      <button
+        type="button"
+        class="btn btn-square btn-sm ml-auto"
+        onclick={() => handlePreview()}
+      >
+        <Icon icon="edit" _class="w-4 h-4" />
+      </button>
+    </div>
+
     {#if !showPreview}
-      <button
-        type="button"
-        class="btn btn-ghost btn-square btn-sm tooltip"
-        data-tip="Bold [Cmd/Ctrl(Shift) + B]"
-        onclick={() => addBoldCommand(contentText)}
-      >
-        <b>b</b>
-      </button>
-      <button
-        type="button"
-        class="btn btn-ghost btn-square btn-sm tooltip"
-        data-tip="Italics [Cmd/Ctrl(Shift) + I]"
-        onclick={() => addItalicCommand(contentText)}
-      >
-        <i>i</i>
-      </button>
-      <button
-        type="button"
-        class="btn btn-ghost btn-square btn-sm tooltip"
-        data-tip="Add link [Cmd/Ctrl(Shift) + K]"
-        onclick={() => addLinkCommand(contentText)}
-      >
-        @
-      </button>
-      <button
-        type="button"
-        class="btn btn-ghost btn-square btn-sm tooltip"
-        data-tip="Add unordered list"
-        onclick={() => addUnorderedListCommand(contentText)}
-      >
-        •••
-      </button>
-      <button
-        type="button"
-        class="btn btn-ghost btn-square btn-sm tooltip"
-        data-tip="Add ordered list"
-        onclick={() => addOrderedListCommand(contentText)}
-      >
-        123
-      </button>
-      <div class="flex">
-        <input id="peer" type="checkbox" class="peer hidden"/>
-        <label for="peer" class="btn btn-square btn-sm btn-ghost peer-checked:hidden">h›</label>
-        <label for="peer" class="btn btn-square btn-sm hidden peer-checked:flex">h‹</label>
-        {#each [2, 3, 4, 5, 6] as hNumber}
-          <button
-            type="button"
-            class="btn btn-ghost btn-square btn-sm hidden peer-checked:flex"
-            onclick={() => addHeadingCommand(contentText, hNumber)}
-          >
-            h{hNumber}
-          </button>
-        {/each}
+      <textarea
+        bind:this={contentText}
+        bind:value={contentValue}
+        onfocus={(evt) => evt.target && useKeyCombinations(evt, contentText)}
+        onchange={() => throttle(contentText)}
+        name="content"
+        class="textarea w-full"
+        id="textAreaContent"
+        data-input-field
+        required
+        rows="15"
+      ></textarea>
+    {:else if contentValue === DEFAULT_VALUE}
+      <div class="-mt-13 min-h-10 flex items-center text-sm">
+        <i>{DEFAULT_VALUE}</i>
       </div>
-
-      <button
-        type="button"
-        class="btn btn-ghost btn-square btn-sm tooltip"
-        data-tip="Code block command"
-        onclick={() => addCodeBlockCommand(contentText)}
-      >
-        ‹ ›
-      </button>
-      <button type="button" class="btn btn-sm px-1" onclick={() => resetCommand(contentText)}>
-        reset
-      </button>
+    {:else}
+      <div class="-mt-13 marked">
+        {@html markup}
+      </div>
     {/if}
-    <button
-      type="button"
-      class="btn btn-square btn-sm ml-auto"
-      onclick={() => handlePreview()}
-    >
-      <Icon icon="edit" _class="w-4 h-4" />
-    </button>
-  </div>
-
-  {#if !showPreview}
-    <textarea
-      bind:this={contentText}
-      bind:value={contentValue}
-      onfocus={(evt) => evt.target && useKeyCombinations(evt, contentText)}
-      onchange={() => throttle(contentText)}
-      name="content"
-      class="textarea w-full"
-      id="textAreaContent"
-      data-input-field
-      required
-      rows="15"
-    ></textarea>
-  {:else if contentValue === DEFAULT_VALUE}
-    <div class="-mt-13 min-h-10 flex items-center text-sm">
-      <i>{DEFAULT_VALUE}</i>
-    </div>
   {:else}
-    <div class="-mt-13 marked">
-      {@html markup}
-    </div>
+  <div class="marked">
+    {@html markup}
+  </div>
   {/if}
 </div>
+

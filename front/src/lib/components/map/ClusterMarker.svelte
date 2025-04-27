@@ -11,6 +11,7 @@ import {
 import { t } from '$lib/i18n'
 import { adventuresStore } from '$lib/store'
 import Rating from '../form/Rating.svelte'
+import { formatDate } from '$lib/utils'
 
 const { map } = $derived(getMapContext())
 let { center, onMoveEnd } = $props<{
@@ -134,10 +135,10 @@ onDestroy(adventuresUnsubscribe)
         {#if visit.start_date || visit.end_date}
           <p class="text-black text-xs">
             {visit.start_date
-              ? new Date(visit.start_date).toLocaleDateString(undefined, { timeZone: 'UTC' })
+              ? formatDate(visit.start_date)
               : ''}
             {visit.end_date && visit.end_date !== visit.start_date
-              ? ` - ${new Date(visit.end_date).toLocaleDateString(undefined, { timeZone: 'UTC' })}`
+              ? ` - ${formatDate(visit.end_date)}`
               : ''}
           </p>
         {/if}

@@ -242,31 +242,22 @@ export class ApiClass {
     )
     const activityByAdventureId = this.activitiesResponse.reduce<
       Record<string, Activity[]>
-    >(
-      (acc, visit) => {
-        ;(acc[visit.adventure_id] ??= []).push(visit)
-        return acc
-      },
-      {},
-    )
+    >((acc, item) => {
+      ;(acc[item.adventure_id] ??= []).push(formatActivity(item))
+      return acc
+    }, {})
     const lodgingByAdventureId = this.lodgingsResponse.reduce<
       Record<string, Lodging[]>
-    >(
-      (acc, visit) => {
-        ;(acc[visit.adventure_id] ??= []).push(visit)
-        return acc
-      },
-      {},
-    )
+    >((acc, item) => {
+      ;(acc[item.adventure_id] ??= []).push(formatLodging(item))
+      return acc
+    }, {})
     const transportationByAdventureId = this.transportationsResponse.reduce<
       Record<string, Transportation[]>
-    >(
-      (acc, visit) => {
-        ;(acc[visit.adventure_id] ??= []).push(visit)
-        return acc
-      },
-      {},
-    )
+    >((acc, item) => {
+      ;(acc[item.adventure_id] ??= []).push(formatTransportation(item))
+      return acc
+    }, {})
     categoriesStore.set(this.categoriesResponse)
     adventuresStore.set(
       this.adventuresResponse.map((a: Adventure) => {
@@ -355,6 +346,21 @@ export class ApiClass {
   async deleteVisit(data: { id: string }) {
     await this.visits.delete(data.id)
     await this.reloadVisits()
+  }
+
+  async deleteActivity(data: { id: string }) {
+    await this.activities.delete(data.id)
+    await this.reloadActivities()
+  }
+
+  async deleteLodging(data: { id: string }) {
+    await this.lodgings.delete(data.id)
+    await this.reloadLodgings()
+  }
+
+  async deleteTransportation(data: { id: string }) {
+    await this.transportations.delete(data.id)
+    await this.reloadTransportations()
   }
 
   async postCategory(data: Category) {
@@ -479,16 +485,12 @@ export class ApiClass {
     const { formData, errors } = validateData(data, patchActivitySchema)
     if (errors) throw new FormError(errors.fieldErrors)
     try {
-      const activity = await this.visits.update(formData.id, {
+      const activity = await this.activities.update(formData.id, {
         adventure_id: formData.adventure_id,
-        category_id: formData.category_id,
-        day_duration: formData.day_duration,
-        notes: formData.notes,
         location: formData.location,
-        latitude: formData.latitude,
-        longitude: formData.longitude,
-        rating: formData.rating,
-        order: formData.order,
+        name: formData.name,
+        cost: formData.cost,
+        at: formData.at,
       })
       await this.reloadActivities()
       return activity
@@ -582,36 +584,85 @@ export class ApiClass {
   }
 }
 
-function formatAdventure(adventure: Adventure): Adventure {
+function formatAdventure(item: Adventure): Adventure {
   return {
-    id: adventure.id,
-    user_id: adventure.user_id,
-    category_id: adventure.category_id || null,
-    description: adventure.description || null,
-    rating: adventure.rating,
-    name: adventure.name,
-    start_date: adventure.start_date
-      ? new Date(adventure.start_date).toISOString().split('T')[0]
+    id: item.id,
+    user_id: item.user_id,
+    category_id: item.category_id || null,
+    description: item.description || null,
+    rating: item.rating,
+    name: item.name,
+    start_date: item.start_date
+      ? new Date(item.start_date).toISOString().split('T')[0]
       : null,
     end_date: null,
     day_duration: null,
   }
 }
 
-function formatVisit(visit: Visit): Visit {
+function formatVisit(item: Visit): Visit {
   return {
-    id: visit.id,
-    adventure_id: visit.adventure_id,
-    category_id: visit.category_id || null,
-    notes: visit.notes || null,
-    day_duration: visit.day_duration,
+    id: item.id,
+    adventure_id: item.adventure_id,
+    category_id: item.category_id || null,
+    notes: item.notes || null,
+    day_duration: item.day_duration,
     start_date: null,
     end_date: null,
-    location: visit.location,
-    latitude: visit.latitude,
-    longitude: visit.longitude,
-    rating: visit.rating,
-    order: visit.order,
+    location: item.location,
+    latitude: item.latitude,
+    longitude: item.longitude,
+    rating: item.rating,
+    order: item.order,
+  }
+}
+
+function formatActivity(item: Activity): Activity {
+  return {
+    id: item.id,
+    adventure_id: item.adventure_id,
+    at: item.at
+      ? new Date(item.at).toISOString().replace('T', ' ').replace('Z', '')
+      : null,
+    location: item.location,
+    name: item.name,
+    cost: item.cost,
+  }
+}
+
+function formatLodging(item: Lodging): Lodging {
+  return {
+    id: item.id,
+    adventure_id: item.adventure_id,
+    from_at: item.from_at
+      ? new Date(item.from_at).toISOString().replace('T', ' ').replace('Z', '')
+      : null,
+    to_at: item.to_at
+      ? new Date(item.to_at).toISOString().replace('T', ' ').replace('Z', '')
+      : null,
+    location: item.location,
+    company: item.company,
+    reservation: item.reservation,
+    cost: item.cost,
+  }
+}
+
+function formatTransportation(item: Transportation): Transportation {
+  return {
+    id: item.id,
+    adventure_id: item.adventure_id,
+    type: item.type,
+    from: item.from,
+    from_at: item.from_at
+      ? new Date(item.from_at).toISOString().replace('T', ' ').replace('Z', '')
+      : null,
+    to: item.to,
+    to_at: item.to_at
+      ? new Date(item.to_at).toISOString().replace('T', ' ').replace('Z', '')
+      : null,
+    company: item.company,
+    reservation: item.reservation,
+    cost: item.cost,
   }
 }
 

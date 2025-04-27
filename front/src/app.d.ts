@@ -96,7 +96,7 @@ declare global {
   interface Transportation {
     id: string
     adventure_id: string
-    type: 'car' | 'boat' | 'velo' | 'bus' | 'flight' | 'train'
+    type: 'car' | 'boat' | 'bike' | 'bus' | 'flight' | 'train'
     company: string | null
     reservation: string | null
     cost: number | null

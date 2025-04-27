@@ -7,9 +7,11 @@ import { Api } from '$lib/api'
 import Icon from '$lib/components/Icon.svelte'
 import MarkupEditor from '$lib/components/form/MarkupEditor.svelte'
 import Rating from '$lib/components/form/Rating.svelte'
+import Organization from '$lib/components/organization/Organization.svelte'
 import { t } from '$lib/i18n'
 import { adventuresStore } from '$lib/store'
 
+let isEditable = $state<boolean>(false)
 let adventure = $state<Adventure>()
 const adventuresUnsubscribe = adventuresStore.subscribe(
   (v) => (adventure = v.find(({ id }) => page.params.id === id)),
@@ -58,18 +60,19 @@ onDestroy(adventuresUnsubscribe)
     >
       {$t('adventures.id.modify', { defaultValue: 'Modify' })}
     </a>
-    <a
+    <button
       class="btn btn-ghost btn-xs"
-      href="/adventures/{adventure.id}/organization"
+      onclick={() => (isEditable = !isEditable)}
     >
-      {$t('adventures.id.organization', { defaultValue: 'Organization' })}
-    </a>
+      {$t('adventures.id.edit', { defaultValue: 'Edit' })}
+    </button>
   </div>
   <MarkupEditor
     contentValue={adventure.description ?? undefined}
-    save={async (description: string) => { await Api.patchAdventure({ id: page.params.id, description }) }}
+    {isEditable}
+    onSave={async (description: string) => { await Api.patchAdventure({ id: page.params.id, description }) }}
   />
-  <div class="flex flex-col gap-4 mt-4">
+  <div class="flex flex-col gap-4 my-4">
     {#each adventure?.visits ?? [] as visit}
       <div class="card bg-base-100 p-4 flex flex-col sm:flex-row justify-between gap-4">
         <div class="w-full shrink">
@@ -105,7 +108,8 @@ onDestroy(adventuresUnsubscribe)
           </p>
           <MarkupEditor
             contentValue={visit.notes ?? undefined}
-            save={async (notes: string) => { await Api.patchVisit({ id: visit.id, notes }) }}
+            {isEditable}
+            onSave={async (notes: string) => { await Api.patchVisit({ id: visit.id, notes }) }}
           />
         </div>
         <div class="sm:min-w-xs flex flex-col">
@@ -130,4 +134,6 @@ onDestroy(adventuresUnsubscribe)
       </div>
     {/each}
   </div>
+
+  <Organization {isEditable}/>
 {/if}

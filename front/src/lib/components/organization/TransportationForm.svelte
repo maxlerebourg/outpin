@@ -3,20 +3,27 @@ import { page } from '$app/state'
 import { Api, FormError } from '$lib/api'
 import { t } from '$lib/i18n'
 
-let { transportation, onFinish } = $props<{ transportation?: Transportation, onFinish: () => void }>()
-let newTransportation = $state<Transportation>(transportation ?? createTransportation())
+let { transportation, onFinish } = $props<{
+  transportation?: Transportation
+  onFinish: () => void
+}>()
+let newTransportation = $state<Transportation>(
+  transportation || createTransportation(),
+)
 let errors = $state<Record<string, string> | null>(null)
 let loading = $state<boolean>(false)
 
 async function handleSubmit(evt: Event) {
-  console.log('yo')
   evt.preventDefault()
   loading = true
   try {
     if (newTransportation.id) {
       await Api.patchTransportation(newTransportation)
     } else {
-      await Api.postTransportation({ ...newTransportation,  adventure_id: page.params.id,})
+      await Api.postTransportation({
+        ...newTransportation,
+        adventure_id: page.params.id,
+      })
     }
     onFinish()
   } catch (err) {
@@ -41,12 +48,15 @@ function createTransportation(): Transportation {
 </script>
 
 <form class="card bg-base-300 p-4 mb-4 w-full gap-2 max-w-xl m-auto" onsubmit={handleSubmit}>
-  <h2>
-    {newTransportation.id
-      ? $t('organization.transportation-form.title-modify', { defaultValue: 'Modify' })
-      : $t('organization.transportation-form.title-create', { defaultValue: 'Create' })}
-    {$t('organization.transportation-form.title', { defaultValue: 'transportation' })}
-  </h2>
+  <div class="flex items-center justify-between w-full">
+    <h2>
+      {newTransportation.id
+        ? $t('organization.transportation-form.title-modify', { defaultValue: 'Modify' })
+        : $t('organization.transportation-form.title-create', { defaultValue: 'Create' })}
+      {$t('organization.transportation-form.title', { defaultValue: 'transportation' })}
+    </h2>
+    <button type="button" class="btn btn-square btn-sm" onclick={onFinish}>✕</button>
+  </div>
   <label class="input w-full">
     {$t('organization.transportation-form.input-type-label', { defaultValue: 'Type' })}:
     <select class="grow" bind:value={newTransportation.type}>
@@ -56,8 +66,8 @@ function createTransportation(): Transportation {
       <option value="boat">
         {$t('organization.transportation-form.input-type-boat-option', { defaultValue: 'Boat' })}
       </option>
-      <option value="velo">
-        {$t('organization.transportation-form.input-type-velo-option', { defaultValue: 'Velo' })}
+      <option value="bike">
+        {$t('organization.transportation-form.input-type-bike-option', { defaultValue: 'Bike' })}
       </option>
       <option value="bus">
         {$t('organization.transportation-form.input-type-bus-option', { defaultValue: 'Bus' })}
@@ -81,9 +91,11 @@ function createTransportation(): Transportation {
     </label>
     <label class="flex gap-2">
       {$t('organization.transportation-form.input-cost-label', { defaultValue: 'Cost' })}:
-      <input type="number" class="w-16" bind:value={newTransportation.cost} />
+      <input type="number" step="0.01" min="0" class="w-16" bind:value={newTransportation.cost} />
     </label>
   </div>
+  {#if errors?.company}<span class="text-xs text-error">{errors.company}</span>{/if}
+  {#if errors?.cost}<span class="text-xs text-error">{errors.cost}</span>{/if}
   <div class="flex gap-2 input w-full">
     <label class="flex-1 flex gap-2">
       {$t('organization.transportation-form.input-from-label', { defaultValue: 'From' })}:
@@ -97,6 +109,8 @@ function createTransportation(): Transportation {
       <input type="datetime-local" max={newTransportation.to_at} bind:value={newTransportation.from_at} />
     </label>
   </div>
+  {#if errors?.from}<span class="text-xs text-error">{errors.from}</span>{/if}
+  {#if errors?.from_at}<span class="text-xs text-error">{errors.from_at}</span>{/if}
   <div class="flex gap-2 input w-full">
     <label class="flex-1 flex gap-2">
       {$t('organization.transportation-form.input-to-label', { defaultValue: 'To' })}:
@@ -110,6 +124,8 @@ function createTransportation(): Transportation {
       <input type="datetime-local" min={newTransportation.from_at} bind:value={newTransportation.to_at} />
     </label>
   </div>
+  {#if errors?.to}<span class="text-xs text-error">{errors.to}</span>{/if}
+  {#if errors?.to_at}<span class="text-xs text-error">{errors.to_at}</span>{/if}
 
   <button type="submit" class="btn btn-primary" disabled={loading}>
     {#if loading}

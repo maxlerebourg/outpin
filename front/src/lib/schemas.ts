@@ -121,7 +121,7 @@ export const patchVisitSchema = z.object({
 })
 
 export const postActivitySchema = z.object({
-  name: z.string().min(3).max(200),
+  name: z.string().min(1).max(200),
   adventure_id: z.string().min(1).max(200),
   location: z.string().nullable(),
   cost: z.number().min(0).nullable(),
@@ -133,14 +133,14 @@ export const patchActivitySchema = z.object({
   adventure_id: z.string().min(1).max(200),
   name: z.string().max(200).nullable().optional(),
   location: z.string().nullable().optional(),
-  cost: z.number().min(0).max(5).nullable().optional(),
+  cost: z.number().min(0).nullable().optional(),
   at: zDate().nullable().optional(),
 })
 
 export const postLodgingSchema = z.object({
   adventure_id: z.string().min(1).max(200),
-  location: z.string().max(200).nullable(),
-  company: z.string().max(200).nullable(),
+  location: z.string().min(1).max(200),
+  company: z.string().min(1).max(200),
   reservation: z.string().max(200).nullable(),
   cost: z.number().min(0).nullable(),
   from_at: zDate().nullable(),
@@ -162,7 +162,7 @@ export const postTransportationSchema = z.object({
   adventure_id: z.string().min(1).max(200),
   company: z.string().max(200).nullable(),
   reservation: z.string().max(200).nullable(),
-  type: z.enum(['car', 'boat', 'velo', 'bus', 'flight', 'train']),
+  type: z.enum(['car', 'boat', 'bike', 'bus', 'flight', 'train']),
   cost: z.number().min(0).nullable(),
   from: z.string().max(200).nullable(),
   from_at: zDate().nullable(),
@@ -175,7 +175,7 @@ export const patchTransportationSchema = z.object({
   adventure_id: z.string().min(1).max(200),
   company: z.string().max(200).nullable().optional(),
   reservation: z.string().max(200).nullable().optional(),
-  type: z.enum(['car', 'boat', 'velo', 'bus', 'flight', 'train']).optional(),
+  type: z.enum(['car', 'boat', 'bike', 'bus', 'flight', 'train']).optional(),
   cost: z.number().min(0).nullable().optional(),
   from: z.string().max(200).nullable().optional(),
   from_at: zDate().nullable().optional(),

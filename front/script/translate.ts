@@ -72,7 +72,7 @@ export default function findTranslations(
 
 const defaultLocale =
   process.argv
-    .find((a: string) => a.startsWith('--defaultLang='))
+    .find((a: string) => a.startsWith('--default-lang='))
     ?.split('=')[1] ?? 'en'
 const directoryPath = `${process.cwd()}/src`
 const directoryOutputPath = `${process.cwd()}/static/lang`
