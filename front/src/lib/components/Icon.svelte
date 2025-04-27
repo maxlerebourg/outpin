@@ -1,6 +1,6 @@
 <script>
 // @ts-nocheck
-const imageModules = import.meta.glob('/static/icons/*.svg', {
+const imageModules = import.meta.glob('/static/icons/**/*.svg', {
   eager: true,
   query: {
     enhanced: true,

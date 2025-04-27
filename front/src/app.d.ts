@@ -25,6 +25,9 @@ declare global {
     category_id: string | null
     category?: Category | null
     visits?: Visit[]
+    activities?: Activity[]
+    lodgings?: Lodging[]
+    transportations?: Transportation[]
     // link?: string | null
     // images: {
     //   id: string
@@ -68,6 +71,39 @@ declare global {
     status?: 'past' | 'current' | 'future'
     category_id: string | null
     category?: Category | null
+  }
+
+  interface Activity {
+    id: string
+    adventure_id: string
+    name: string
+    location: string | null
+    cost: number | null
+    at: string | null
+  }
+
+  interface Lodging {
+    id: string
+    adventure_id: string
+    company: string
+    location: string | null
+    reservation: string | null
+    cost: number | null
+    from_at: string | null
+    to_at: string | null
+  }
+
+  interface Transportation {
+    id: string
+    adventure_id: string
+    type: 'car' | 'boat' | 'bike' | 'bus' | 'flight' | 'train'
+    company: string | null
+    reservation: string | null
+    cost: number | null
+    from: string | null
+    from_at: string | null
+    to: string | null
+    to_at: string | null
   }
 
   interface Address {

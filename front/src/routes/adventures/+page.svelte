@@ -109,13 +109,13 @@ onDestroy(adventuresUnsubscribe)
             class="btn btn-ghost btn-xs"
             onclick={async () => await Api.deleteAdventure({ id: adventure.id })}
           >
-            {$t('adventures.delete', { defaultValue: 'delete' })}
+            {$t('adventures.delete', { defaultValue: 'Delete' })}
           </button>
           <a
             class="btn btn-ghost btn-xs"
             href="/?{new URLSearchParams({ adventure_id: adventure.id }).toString()}"
           >
-            {$t('adventures.modify', { defaultValue: 'modify' })}
+            {$t('adventures.modify', { defaultValue: 'Modify' })}
           </a>
         </div>
           <p class="inline-flex items-center text-xs mb-1">

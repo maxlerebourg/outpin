@@ -12,6 +12,12 @@ import {
   postVisitSchema,
   patchAdventureSchema,
   patchVisitSchema,
+  postActivitySchema,
+  patchActivitySchema,
+  postLodgingSchema,
+  patchLodgingSchema,
+  postTransportationSchema,
+  patchTransportationSchema,
 } from './schemas'
 import { adventuresStore, categoriesStore } from './store'
 
@@ -43,10 +49,16 @@ export class ApiClass {
   adventures = this.pb.collection<Adventure>('adventures')
   categories = this.pb.collection<Category>('categories')
   visits = this.pb.collection<Visit>('visits')
+  activities = this.pb.collection<Activity>('activities')
+  lodgings = this.pb.collection<Lodging>('lodgings')
+  transportations = this.pb.collection<Transportation>('transportations')
 
   adventuresResponse: Adventure[] = []
   visitsResponse: Visit[] = []
   categoriesResponse: Category[] = []
+  activitiesResponse: Activity[] = []
+  lodgingsResponse: Lodging[] = []
+  transportationsResponse: Transportation[] = []
 
   async getGeocodingReverse(lngLat: LngLat): Promise<Address> {
     return await this.pb.send<Address>('/api/geocoding/reverse', {
@@ -152,20 +164,38 @@ export class ApiClass {
   }
 
   async reloadAdventures() {
-    const adventures = await this.getUserAdventures()
-    this.adventuresResponse = adventures
+    const items = await this.getUserAdventures()
+    this.adventuresResponse = items
     this.computeStore()
   }
 
   async reloadCategories() {
-    const categories = await this.getUserCategories()
-    this.categoriesResponse = categories
+    const items = await this.getUserCategories()
+    this.categoriesResponse = items
     this.computeStore()
   }
 
   async reloadVisits() {
-    const visits = await this.getUserVisits()
-    this.visitsResponse = visits
+    const items = await this.getUserVisits()
+    this.visitsResponse = items
+    this.computeStore()
+  }
+
+  async reloadActivities() {
+    const items = await this.getUserActivities()
+    this.activitiesResponse = items
+    this.computeStore()
+  }
+
+  async reloadLodgings() {
+    const items = await this.getUserLodgings()
+    this.lodgingsResponse = items
+    this.computeStore()
+  }
+
+  async reloadTransportations() {
+    const items = await this.getUserTransportations()
+    this.transportationsResponse = items
     this.computeStore()
   }
 
@@ -195,9 +225,6 @@ export class ApiClass {
     const categoryById = this.categoriesResponse.reduce<
       Record<string, Category>
     >((acc, cat) => ({ ...acc, [cat.id]: cat }), {})
-    const adventureById = this.adventuresResponse.reduce<
-      Record<string, Adventure>
-    >((acc, adv) => ({ ...acc, [adv.id]: adv }), {})
 
     const now = new Date().toISOString().split('T')[0]
     const computedVisits = this.visitsResponse
@@ -213,6 +240,24 @@ export class ApiClass {
       },
       {},
     )
+    const activityByAdventureId = this.activitiesResponse.reduce<
+      Record<string, Activity[]>
+    >((acc, item) => {
+      ;(acc[item.adventure_id] ??= []).push(formatActivity(item))
+      return acc
+    }, {})
+    const lodgingByAdventureId = this.lodgingsResponse.reduce<
+      Record<string, Lodging[]>
+    >((acc, item) => {
+      ;(acc[item.adventure_id] ??= []).push(formatLodging(item))
+      return acc
+    }, {})
+    const transportationByAdventureId = this.transportationsResponse.reduce<
+      Record<string, Transportation[]>
+    >((acc, item) => {
+      ;(acc[item.adventure_id] ??= []).push(formatTransportation(item))
+      return acc
+    }, {})
     categoriesStore.set(this.categoriesResponse)
     adventuresStore.set(
       this.adventuresResponse.map((a: Adventure) => {
@@ -250,12 +295,15 @@ export class ApiClass {
         }
         return {
           ...formatAdventure(a),
-          visits,
           end_date: a.start_date
             ? currentDate?.toISOString().split('T')[0]
             : null,
           day_duration,
           category: categoryById[a.category_id ?? ''] ?? null,
+          visits,
+          activities: activityByAdventureId[a.id ?? ''] ?? [],
+          lodgings: lodgingByAdventureId[a.id ?? ''] ?? [],
+          transportations: transportationByAdventureId[a.id ?? ''] ?? [],
         }
       }),
     )
@@ -273,6 +321,18 @@ export class ApiClass {
     return this.visits.getFullList()
   }
 
+  getUserActivities() {
+    return this.activities.getFullList()
+  }
+
+  getUserLodgings() {
+    return this.lodgings.getFullList()
+  }
+
+  getUserTransportations() {
+    return this.transportations.getFullList()
+  }
+
   async deleteAdventure(data: { id: string }) {
     await this.adventures.delete(data.id)
     await this.reloadAdventures()
@@ -286,6 +346,21 @@ export class ApiClass {
   async deleteVisit(data: { id: string }) {
     await this.visits.delete(data.id)
     await this.reloadVisits()
+  }
+
+  async deleteActivity(data: { id: string }) {
+    await this.activities.delete(data.id)
+    await this.reloadActivities()
+  }
+
+  async deleteLodging(data: { id: string }) {
+    await this.lodgings.delete(data.id)
+    await this.reloadLodgings()
+  }
+
+  async deleteTransportation(data: { id: string }) {
+    await this.transportations.delete(data.id)
+    await this.reloadTransportations()
   }
 
   async postCategory(data: Category) {
@@ -346,7 +421,6 @@ export class ApiClass {
 
   async postVisit(data: Visit) {
     const { formData, errors } = validateData(data, postVisitSchema)
-    console.log(errors, formData)
     if (errors) throw new FormError(errors.fieldErrors)
     try {
       const visit = await this.visits.create({
@@ -388,38 +462,207 @@ export class ApiClass {
       throw new FormError({ error: err.response.message })
     }
   }
+
+  async postActivity(data: Activity) {
+    const { formData, errors } = validateData(data, postActivitySchema)
+    if (errors) throw new FormError(errors.fieldErrors)
+    try {
+      const activity = await this.activities.create({
+        adventure_id: formData.adventure_id,
+        location: formData.location,
+        name: formData.name,
+        cost: formData.cost,
+        at: formData.at,
+      })
+      await this.reloadActivities()
+      return activity
+    } catch (err: any) {
+      throw new FormError({ error: err.response.message })
+    }
+  }
+
+  async patchActivity(data: Partial<Activity>) {
+    const { formData, errors } = validateData(data, patchActivitySchema)
+    if (errors) throw new FormError(errors.fieldErrors)
+    try {
+      const activity = await this.activities.update(formData.id, {
+        adventure_id: formData.adventure_id,
+        location: formData.location,
+        name: formData.name,
+        cost: formData.cost,
+        at: formData.at,
+      })
+      await this.reloadActivities()
+      return activity
+    } catch (err: any) {
+      throw new FormError({ error: err.response.message })
+    }
+  }
+
+  async postLodging(data: Lodging) {
+    const { formData, errors } = validateData(data, postLodgingSchema)
+    if (errors) throw new FormError(errors.fieldErrors)
+    try {
+      const lodging = await this.lodgings.create({
+        adventure_id: formData.adventure_id,
+        location: formData.location,
+        company: formData.company,
+        reservation: formData.reservation,
+        cost: formData.cost,
+        from_at: formData.from_at,
+        to_at: formData.to_at,
+      })
+      await this.reloadLodgings()
+      return lodging
+    } catch (err: any) {
+      throw new FormError({ error: err.response.message })
+    }
+  }
+
+  async patchLodging(data: Partial<Lodging>) {
+    const { formData, errors } = validateData(data, patchLodgingSchema)
+    if (errors) throw new FormError(errors.fieldErrors)
+    try {
+      const lodging = await this.lodgings.update(formData.id, {
+        adventure_id: formData.adventure_id,
+        location: formData.location,
+        company: formData.company,
+        reservation: formData.reservation,
+        cost: formData.cost,
+        from_at: formData.from_at,
+        to_at: formData.to_at,
+      })
+      await this.reloadLodgings()
+      return lodging
+    } catch (err: any) {
+      throw new FormError({ error: err.response.message })
+    }
+  }
+
+  async postTransportation(data: Transportation) {
+    const { formData, errors } = validateData(data, postTransportationSchema)
+    if (errors) throw new FormError(errors.fieldErrors)
+    try {
+      const transportation = await this.transportations.create({
+        adventure_id: formData.adventure_id,
+        type: formData.type,
+        company: formData.company,
+        reservation: formData.reservation,
+        cost: formData.cost,
+        from: formData.from,
+        from_at: formData.from_at,
+        to: formData.to,
+        to_at: formData.to_at,
+      })
+      await this.reloadTransportations()
+      return transportation
+    } catch (err: any) {
+      throw new FormError({ error: err.response.message })
+    }
+  }
+
+  async patchTransportation(data: Partial<Transportation>) {
+    const { formData, errors } = validateData(data, patchTransportationSchema)
+    if (errors) throw new FormError(errors.fieldErrors)
+    try {
+      const transportation = await this.transportations.update(formData.id, {
+        adventure_id: formData.adventure_id,
+        type: formData.type,
+        company: formData.company,
+        reservation: formData.reservation,
+        cost: formData.cost,
+        from: formData.from,
+        from_at: formData.from_at,
+        to: formData.to,
+        to_at: formData.to_at,
+      })
+      await this.reloadTransportations()
+      return transportation
+    } catch (err: any) {
+      throw new FormError({ error: err.response.message })
+    }
+  }
 }
 
-function formatAdventure(adventure: Adventure): Adventure {
+function formatAdventure(item: Adventure): Adventure {
   return {
-    id: adventure.id,
-    user_id: adventure.user_id,
-    category_id: adventure.category_id || null,
-    description: adventure.description || null,
-    rating: adventure.rating,
-    name: adventure.name,
-    start_date: adventure.start_date
-      ? new Date(adventure.start_date).toISOString().split('T')[0]
+    id: item.id,
+    user_id: item.user_id,
+    category_id: item.category_id || null,
+    description: item.description || null,
+    rating: item.rating,
+    name: item.name,
+    start_date: item.start_date
+      ? new Date(item.start_date).toISOString().split('T')[0]
       : null,
     end_date: null,
     day_duration: null,
   }
 }
 
-function formatVisit(visit: Visit): Visit {
+function formatVisit(item: Visit): Visit {
   return {
-    id: visit.id,
-    adventure_id: visit.adventure_id,
-    category_id: visit.category_id || null,
-    notes: visit.notes || null,
-    day_duration: visit.day_duration,
+    id: item.id,
+    adventure_id: item.adventure_id,
+    category_id: item.category_id || null,
+    notes: item.notes || null,
+    day_duration: item.day_duration,
     start_date: null,
     end_date: null,
-    location: visit.location,
-    latitude: visit.latitude,
-    longitude: visit.longitude,
-    rating: visit.rating,
-    order: visit.order,
+    location: item.location,
+    latitude: item.latitude,
+    longitude: item.longitude,
+    rating: item.rating,
+    order: item.order,
+  }
+}
+
+function formatActivity(item: Activity): Activity {
+  return {
+    id: item.id,
+    adventure_id: item.adventure_id,
+    at: item.at
+      ? new Date(item.at).toISOString().replace('T', ' ').replace('Z', '')
+      : null,
+    location: item.location,
+    name: item.name,
+    cost: item.cost,
+  }
+}
+
+function formatLodging(item: Lodging): Lodging {
+  return {
+    id: item.id,
+    adventure_id: item.adventure_id,
+    from_at: item.from_at
+      ? new Date(item.from_at).toISOString().replace('T', ' ').replace('Z', '')
+      : null,
+    to_at: item.to_at
+      ? new Date(item.to_at).toISOString().replace('T', ' ').replace('Z', '')
+      : null,
+    location: item.location,
+    company: item.company,
+    reservation: item.reservation,
+    cost: item.cost,
+  }
+}
+
+function formatTransportation(item: Transportation): Transportation {
+  return {
+    id: item.id,
+    adventure_id: item.adventure_id,
+    type: item.type,
+    from: item.from,
+    from_at: item.from_at
+      ? new Date(item.from_at).toISOString().replace('T', ' ').replace('Z', '')
+      : null,
+    to: item.to,
+    to_at: item.to_at
+      ? new Date(item.to_at).toISOString().replace('T', ' ').replace('Z', '')
+      : null,
+    company: item.company,
+    reservation: item.reservation,
+    cost: item.cost,
   }
 }
 

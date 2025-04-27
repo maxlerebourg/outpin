@@ -33,3 +33,21 @@ export function clickOutside(element: Element, callback: () => void) {
     destroy: () => document.body.removeEventListener('click', onClick),
   }
 }
+
+export function formatDate(str: string) {
+  return new Date(str).toLocaleDateString(undefined, {
+    year: '2-digit',
+    month: 'numeric',
+    day: 'numeric',
+  })
+}
+
+export function formatDatetime(str: string) {
+  return new Date(str).toLocaleString(undefined, {
+    year: '2-digit',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  })
+}
