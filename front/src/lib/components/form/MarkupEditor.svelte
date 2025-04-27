@@ -13,7 +13,11 @@ const DEFAULT_VALUE = $t('markup-editor.default-value', {
 
 // Thanks to https://github.com/Sirneij/devto-editor-clone
 let contentText = $state<HTMLTextAreaElement>()
-let { contentValue = DEFAULT_VALUE, isEditable = false, onSave } = $props<{
+let {
+  contentValue = DEFAULT_VALUE,
+  isEditable = false,
+  onSave,
+} = $props<{
   contentValue?: string
   isEditable?: boolean
   onSave: (s: string) => Promise<void>
@@ -295,4 +299,3 @@ onMount(() => handlePreview(false))
   </div>
   {/if}
 </div>
-

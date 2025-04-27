@@ -1,31 +1,31 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte'
-  import { page } from '$app/state'
-  
-  import { Api } from '$lib/api'
-  import { t } from '$lib/i18n'
-  import { adventuresStore } from '$lib/store'
-  import ActivityForm from '$lib/components/organization/ActivityForm.svelte'
-  import Icon from '$lib/components/Icon.svelte'
-  import TransportationForm from '$lib/components/organization/TransportationForm.svelte'
-  import LodgingForm from '$lib/components/organization/LodgingForm.svelte'
-  import { formatDatetime } from '$lib/utils'
-  
-  let { isEditable = false } = $props<{ isEditable?: boolean }>()
-  let adventure = $state<Adventure>()
-  let newActivity = $state<Activity | null | undefined>(null)
-  let newTransportation = $state<Transportation | null | undefined>(null)
-  let newLodging = $state<Lodging | null | undefined>(null)
-  const adventuresUnsubscribe = adventuresStore.subscribe(
-    (v) => (adventure = v.find(({ id }) => page.params.id === id)),
-  )
-  
-  onMount(() => {
-    Api.reloadActivities()
-    Api.reloadLodgings()
-    Api.reloadTransportations()
-  })
-  onDestroy(adventuresUnsubscribe)
+import { onDestroy, onMount } from 'svelte'
+import { page } from '$app/state'
+
+import { Api } from '$lib/api'
+import { t } from '$lib/i18n'
+import { adventuresStore } from '$lib/store'
+import ActivityForm from '$lib/components/organization/ActivityForm.svelte'
+import Icon from '$lib/components/Icon.svelte'
+import TransportationForm from '$lib/components/organization/TransportationForm.svelte'
+import LodgingForm from '$lib/components/organization/LodgingForm.svelte'
+import { formatDatetime } from '$lib/utils'
+
+let { isEditable = false } = $props<{ isEditable?: boolean }>()
+let adventure = $state<Adventure>()
+let newActivity = $state<Activity | null | undefined>(null)
+let newTransportation = $state<Transportation | null | undefined>(null)
+let newLodging = $state<Lodging | null | undefined>(null)
+const adventuresUnsubscribe = adventuresStore.subscribe(
+  (v) => (adventure = v.find(({ id }) => page.params.id === id)),
+)
+
+onMount(() => {
+  Api.reloadActivities()
+  Api.reloadLodgings()
+  Api.reloadTransportations()
+})
+onDestroy(adventuresUnsubscribe)
 </script>
   
 {#if adventure}
@@ -206,4 +206,3 @@
     </div>
   </div>
 {/if}
-    
