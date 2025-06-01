@@ -10,7 +10,7 @@ Run the Docker image provided `ghcr.io/maxlerebourg/outpin`.
 
 The default port is 8090, but it can be overridden using the Docker CMD argument with `--http=http://0.0.0.0:9999`
 
-All data is stored in the `/pb_data` folder.
+All data is stored in the `/pb/pb_data` folder.
 
 Don’t forget to use PocketBase’s built-in backup system or implement your own backup solution.
 
@@ -29,6 +29,7 @@ The map from [Carto](https://carto.com) can be impossible to display for the sam
 ```
 PB_ADMIN_EMAIL - Your superuser PocketBase email. 
 PB_ADMIN_PASSWORD - Your superuser PocketBase password.
+TRUSTED_HEADER_EMAIL - The given header on `/api/self` to signin/signup account (Remove this header if it doesn't come from your setup).
 ```
 
 

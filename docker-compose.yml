@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  outpin:
+    restart: unless-stopped
+    image: ghcr.io/maxlerebourg/outpin
+    # command: --http=0.0.0.0:8090 ## To change the host:port
+    ports:
+      - 8090:8090
+    volumes:
+      - ./data:/pb/pb_data
+    environment:
+      - PB_ADMIN_EMAIL=test@test.com
+      - PB_ADMIN_PASSWORD=12345678

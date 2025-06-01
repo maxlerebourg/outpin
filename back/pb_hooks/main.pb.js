@@ -14,6 +14,62 @@ routerUse((c) => {
   }
 })
 
+routerUse((c) => {
+  const trustedHeaderEmail = $os.getenv('TRUSTED_HEADER_EMAIL')
+  if (!trustedHeaderEmail) return c.next()
+    
+  const email = c.request.header.get(trustedHeaderEmail)
+  if (!email) return c.next()
+  c.auth.se(email)
+
+  // const users = app.findCollectionByNameOrId("users")
+  // const record = new Record(users)
+  
+  // const emailHandle = formData.email?.split('@')[0].toLowerCase() ?? ''
+  // const randomDigits = Math.floor(1000 + Math.random() * 8999) // Generate random 4 digit number
+  // const username = `${emailHandle}${randomDigits}`
+
+  // const randomPassword = $security.randomStringByRegex('[A-Za-z0-9]{8}')
+
+  // record.set("email", email || randomEmail)
+  // record.set("password", password || randomPassword)
+  // app.save(record)
+  //   c.json(200, { email })
+  // },
+
+  c.next()
+})
+
+routerAdd(
+  "GET",
+  "/api/self",
+  (c) => {
+    const trustedHeaderEmail = $os.getenv('TRUSTED_HEADER_EMAIL')
+    if (!trustedHeaderEmail) return c.json(200, {})
+      
+    const email = c.request.header.get(trustedHeaderEmail)
+    if (!email) return c.json(200, {})
+
+    const users = app.findCollectionByNameOrId("users")
+    const record = new Record(users)
+    
+    const emailHandle = formData.email?.split('@')[0].toLowerCase() ?? ''
+    const randomDigits = Math.floor(1000 + Math.random() * 8999) // Generate random 4 digit number
+    const username = `${emailHandle}${randomDigits}`
+
+    const randomPassword = $security.randomStringByRegex('[A-Za-z0-9]{8}')
+    if (!email)
+      console.log(`Generated superuser email is ${randomEmail}`)
+    if (!password)
+      console.log(`Generated superuser password is: ${randomPassword}`)
+
+    record.set("email", email || randomEmail)
+    record.set("password", password || randomPassword)
+    app.save(record)
+      c.json(200, { email })
+    },
+)
+
 routerAdd(
   "GET",
   "/api/geocoding/reverse",

@@ -12,6 +12,7 @@ services:
       - HOME=/app/pb
       - PB_ADMIN_EMAIL=test@test.com
       - PB_ADMIN_PASSWORD=12345678
+      - TRUSTED_HEADER_EMAIL=X-Auth-Request-Email
 
     # build: .
     ports:
