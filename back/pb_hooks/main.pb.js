@@ -14,32 +14,6 @@ routerUse((c) => {
   }
 })
 
-routerUse((c) => {
-  const trustedHeaderEmail = $os.getenv('TRUSTED_HEADER_EMAIL')
-  if (!trustedHeaderEmail) return c.next()
-    
-  const email = c.request.header.get(trustedHeaderEmail)
-  if (!email) return c.next()
-  c.auth.se(email)
-
-  // const users = app.findCollectionByNameOrId("users")
-  // const record = new Record(users)
-  
-  // const emailHandle = formData.email?.split('@')[0].toLowerCase() ?? ''
-  // const randomDigits = Math.floor(1000 + Math.random() * 8999) // Generate random 4 digit number
-  // const username = `${emailHandle}${randomDigits}`
-
-  // const randomPassword = $security.randomStringByRegex('[A-Za-z0-9]{8}')
-
-  // record.set("email", email || randomEmail)
-  // record.set("password", password || randomPassword)
-  // app.save(record)
-  //   c.json(200, { email })
-  // },
-
-  c.next()
-})
-
 routerAdd(
   "GET",
   "/api/self",
@@ -49,25 +23,30 @@ routerAdd(
       
     const email = c.request.header.get(trustedHeaderEmail)
     if (!email) return c.json(200, {})
+    let user
+    try {
+      user = $app.findAuthRecordByEmail('users', email)
+      return $apis.recordAuthResponse(c, user)
+    } catch(err) {
+      console.log('err', err)
+    }
 
-    const users = app.findCollectionByNameOrId("users")
-    const record = new Record(users)
+    if (user) return c.json(200, {})
+    try {
+      const users = $app.findCollectionByNameOrId('users')
+      const record = new Record(users)
     
-    const emailHandle = formData.email?.split('@')[0].toLowerCase() ?? ''
-    const randomDigits = Math.floor(1000 + Math.random() * 8999) // Generate random 4 digit number
-    const username = `${emailHandle}${randomDigits}`
+      record.set('email', email)
+      record.set('password', $security.randomStringByRegex('[A-Za-z0-9]{8}'))
 
-    const randomPassword = $security.randomStringByRegex('[A-Za-z0-9]{8}')
-    if (!email)
-      console.log(`Generated superuser email is ${randomEmail}`)
-    if (!password)
-      console.log(`Generated superuser password is: ${randomPassword}`)
-
-    record.set("email", email || randomEmail)
-    record.set("password", password || randomPassword)
-    app.save(record)
-      c.json(200, { email })
-    },
+      $app.save(record)
+      user = $app.findAuthRecordByEmail('users', email)
+      return $apis.recordAuthResponse(c, user)
+    } catch (err) {
+      console.log('err', err)
+    }
+    c.json(200, {})
+  },
 )
 
 routerAdd(
