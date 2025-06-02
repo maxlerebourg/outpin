@@ -72,14 +72,25 @@ export class ApiClass {
     })
   }
 
+  async getSelf() {
+    return await this.pb.send('/api/self', {
+      headers: { 'X-Auth-Request-Email': 'ca@ca.ca' }
+    })
+  }
+
   async refreshUser() {
     try {
-      if (!this.pb.authStore.isValid) throw new Error()
-      await this.users.authRefresh()
-      await this.load()
-    } catch (err: any) {
-      await this.logout()
+      const data = await this.getSelf()
+      if (data.token) {
+        this.pb.authStore.save(data.token, data.record)
+      } else {
+        if (!this.pb.authStore.isValid) throw new Error() 
+        await this.users.authRefresh()
+      }
+    } catch {
+      return await this.logout()
     }
+    await this.load()
   }
 
   async login(data: Auth) {

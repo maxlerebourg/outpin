@@ -393,8 +393,8 @@ migrate((app) => {
   ]
   collections.map((item) => app.save(new Collection(item)))
 
-  let superusers = app.findCollectionByNameOrId("_superusers")
-  let record = new Record(superusers)
+  const superusers = app.findCollectionByNameOrId("_superusers")
+  const record = new Record(superusers)
 
   const email = $os.getenv('PB_ADMIN_EMAIL')
   const randomEmail = 'admin@admin.com'

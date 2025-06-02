@@ -16,6 +16,41 @@ routerUse((c) => {
 
 routerAdd(
   "GET",
+  "/api/self",
+  (c) => {
+    const trustedHeaderEmail = $os.getenv('TRUSTED_HEADER_EMAIL')
+    if (!trustedHeaderEmail) return c.json(200, {})
+      
+    const email = c.request.header.get(trustedHeaderEmail)
+    if (!email) return c.json(200, {})
+    let user
+    try {
+      user = $app.findAuthRecordByEmail('users', email)
+      return $apis.recordAuthResponse(c, user)
+    } catch(err) {
+      console.log('err', err)
+    }
+
+    if (user) return c.json(200, {})
+    try {
+      const users = $app.findCollectionByNameOrId('users')
+      const record = new Record(users)
+    
+      record.set('email', email)
+      record.set('password', $security.randomStringByRegex('[A-Za-z0-9]{8}'))
+
+      $app.save(record)
+      user = $app.findAuthRecordByEmail('users', email)
+      return $apis.recordAuthResponse(c, user)
+    } catch (err) {
+      console.log('err', err)
+    }
+    c.json(200, {})
+  },
+)
+
+routerAdd(
+  "GET",
   "/api/geocoding/reverse",
   (c) => {
     const lat = c.request.url.query().get('lat')

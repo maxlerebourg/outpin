@@ -2,7 +2,6 @@ version: '3'
 
 services:
   back:
-    restart: unless-stopped
     image: alpine
     command: "/app/pb/pocketbase serve --dev --http 0.0.0.0:8090"
     volumes:
@@ -12,7 +11,6 @@ services:
       - HOME=/app/pb
       - PB_ADMIN_EMAIL=test@test.com
       - PB_ADMIN_PASSWORD=12345678
-
-    # build: .
+      - TRUSTED_HEADER_EMAIL=X-Auth-Request-Email
     ports:
       - 8090:8090
