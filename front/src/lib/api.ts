@@ -73,9 +73,7 @@ export class ApiClass {
   }
 
   async getSelf() {
-    return await this.pb.send('/api/self', {
-      headers: { 'X-Auth-Request-Email': 'ca@ca.ca' }
-    })
+    return await this.pb.send('/api/self', {})
   }
 
   async refreshUser() {
@@ -84,7 +82,7 @@ export class ApiClass {
       if (data.token) {
         this.pb.authStore.save(data.token, data.record)
       } else {
-        if (!this.pb.authStore.isValid) throw new Error() 
+        if (!this.pb.authStore.isValid) throw new Error()
         await this.users.authRefresh()
       }
     } catch {
