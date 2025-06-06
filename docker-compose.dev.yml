@@ -12,5 +12,6 @@ services:
       - PB_ADMIN_EMAIL=test@test.com
       - PB_ADMIN_PASSWORD=12345678
       - TRUSTED_HEADER_EMAIL=X-Auth-Request-Email
+      # - UNIQUE_ACCOUNT=test@test.com
     ports:
       - 8090:8090

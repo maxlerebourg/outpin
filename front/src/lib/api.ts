@@ -1,5 +1,5 @@
 import { PUBLIC_POCKETBASE_URL } from '$env/static/public'
-import PocketBase from 'pocketbase'
+import PocketBase, { type RecordAuthResponse } from 'pocketbase'
 import { toSlug } from './utils'
 import {
   loginUserSchema,
@@ -73,7 +73,7 @@ export class ApiClass {
   }
 
   async getSelf() {
-    return await this.pb.send('/api/self', {})
+    return await this.pb.send<RecordAuthResponse>('/api/self', {})
   }
 
   async refreshUser() {
