@@ -30,6 +30,7 @@ The map from [Carto](https://carto.com) can be impossible to display for the sam
 PB_ADMIN_EMAIL - Your superuser PocketBase email. 
 PB_ADMIN_PASSWORD - Your superuser PocketBase password.
 TRUSTED_HEADER_EMAIL - The given header on `/api/self` to signin/signup account (Remove this header if it doesn't come from your setup).
+UNIQUE_ACCOUNT - Set an email to disable login/register and use the email's account for everyone.
 ```
 
 
