@@ -32,7 +32,7 @@ async function onMarkerChange(lngLat: LngLat) {
     // Pass
   }
 }
-async function onAddressSearch(search: string) {
+async function onSearch(search: string) {
   marker = null
   try {
     if (!search) return
@@ -66,7 +66,7 @@ onMount(() => {
 <div class="relative h-[calc(100vh-64px)]">
   <form
     class="z-30 absolute left-0 top-0 p-5 flex gap-2 w-[calc(100vw-32px)] sm:max-w-lg rounded-t-xl"
-    onsubmit={() => onAddressSearch(search)}
+    onsubmit={() => onSearch(search)}
   >
     <button
       type="button"
@@ -93,7 +93,7 @@ onMount(() => {
 		class="z-20 absolute pt-18 top-0 bottom-0 right-full transition duration-300 card rounded-l-none bg-base-100 h-full w-[calc(100vw-32px)] sm:max-w-lg"
   >
     <div class="h-full w-full relative p-5 overflow-auto">
-      <AdventureForm {address} onClose={() => (isFormDisplayed = false)} onSearch={onAddressSearch} />
+      <AdventureForm {address} onClose={() => (isFormDisplayed = false)} {onSearch} />
     </div>
   </div>
 	{#await loadMap() then map}

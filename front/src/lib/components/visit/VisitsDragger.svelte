@@ -30,20 +30,6 @@ async function deleteVisit(removeId: string) {
   loading = false
 }
 
-function dragStart(index: number) {
-  dragStartIndex = index
-}
-
-function dragOver(evt: Event, index: number) {
-  evt.preventDefault()
-  if (dragOverIndex === index) return
-  document
-    .getElementById(`visit-${dragOverIndex}`)
-    ?.classList.remove('bg-primary/20')
-  document.getElementById(`visit-${index}`)?.classList.add('bg-primary/20')
-  dragOverIndex = index
-}
-
 function createVisit(): Visit {
   return {
     id: '',
@@ -68,6 +54,20 @@ function updateVisit(visit: Visit) {
   else modifiedVisit = { ...visit }
 }
 
+function dragStart(index: number) {
+  dragStartIndex = index
+}
+
+function dragOver(evt: Event, index: number) {
+  evt.preventDefault()
+  if (dragOverIndex === index) return
+  document
+    .getElementById(`visit-${dragOverIndex}`)
+    ?.classList.remove('bg-primary/20')
+  document.getElementById(`visit-${index}`)?.classList.add('bg-primary/20')
+  dragOverIndex = index
+}
+
 async function dragDrop(index: number) {
   loading = true
   document
@@ -75,8 +75,8 @@ async function dragDrop(index: number) {
     ?.classList.remove('bg-primary/20')
   const itemStart = newAdventure.visits[dragStartIndex]
   const itemEnd = newAdventure.visits[index]
-  newAdventure.visits[dragStartIndex] = itemEnd
-  newAdventure.visits[index] = itemStart
+  newAdventure.visits[dragStartIndex] = { ...itemEnd, order: dragStartIndex }
+  newAdventure.visits[index] = { ...itemStart, order: index }
   await Api.patchVisit({
     id: newAdventure.visits[dragStartIndex].id,
     order: dragStartIndex,
@@ -90,7 +90,7 @@ async function dragDrop(index: number) {
 }
 
 $effect(() => {
-  if (!address || !modifiedVisit || modifiedVisit.id !== '') return
+  if (!address || !modifiedVisit) return
   modifiedVisit.location = `${address.city ? `${address.city}, ` : ''}${address.state}${address.postCode ? ` ${address.postCode}` : ''}, ${address.country}`
   modifiedVisit.latitude = address.latitude
   modifiedVisit.longitude = address.longitude

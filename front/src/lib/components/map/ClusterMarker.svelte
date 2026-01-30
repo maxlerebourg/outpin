@@ -8,9 +8,10 @@ import {
   Popup,
   MapEvents,
 } from 'svelte-maplibre'
+
+import Rating from '$lib/components/form/Rating.svelte'
 import { t } from '$lib/i18n'
 import { adventuresStore } from '$lib/store'
-import Rating from '../form/Rating.svelte'
 import { formatDate } from '$lib/utils'
 
 const { map } = $derived(getMapContext())
@@ -23,13 +24,19 @@ let innerFeaturesPromise = $derived.by(async () => {
   if (!map) return {}
   const featureLines: any[] = []
   const featurePoints: any[] = []
-  adventures.map((adventure: Adventure) => {
+  adventures.map((adventure) => {
     const visits: Visit[] = adventure?.visits ?? []
     visits.map((visit, i) => {
       if (!visit.longitude || !visit.latitude) return
       featurePoints.push({
         type: 'Feature',
-        properties: { id: visit.id, adventure, visit },
+        properties: {
+          id: visit.id,
+          visit: {
+            ...visit,
+            icon: visit.category?.icon || adventure.category?.icon || '',
+          },
+        },
         geometry: {
           type: 'Point',
           coordinates: [visit.longitude, visit.latitude],
@@ -67,11 +74,11 @@ $effect(() => {
 })
 $effect(() => {
   if (!center) return
-  map.flyTo({ center })
+  map?.flyTo({ center })
 })
 
 function onMove() {
-  onMoveEnd(map.getCenter())
+  onMoveEnd(map?.getCenter())
 }
 
 let lines = $state<any>({ type: 'FeatureCollection', features: [] })
@@ -110,11 +117,10 @@ onDestroy(adventuresUnsubscribe)
   <MarkerLayer asButton applyToClusters={false}>
     {#snippet children({ feature })}
       {@const props = feature.properties}
-      {@const adventure = JSON.parse(props?.adventure) ?? {}}
       {@const visit = JSON.parse(props?.visit) ?? {}}
       <div class="indicator flex items-center justify-center h-8 w-8 border-2 border-gray-200 rounded-full p-1 {(visit.status === 'past' && 'bg-secondary') || (visit.status === 'current' && 'bg-warning') || 'bg-info'}">
         <span class="indicator-item badge badge-xs px-1 badge-primary">{visit.order + 1}</span>
-        <span class="text-xl">{visit.category?.icon || adventure.category?.icon || ''}</span>
+        <span class="text-xl">{visit?.icon}</span>
       </div>
       <Popup openOn="click" offset={[0, -10]}>
         <h3 class="text-lg text-black font-bold" title={visit.location}>

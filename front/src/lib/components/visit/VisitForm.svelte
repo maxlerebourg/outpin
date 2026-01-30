@@ -56,6 +56,19 @@ function onAdd(value: number) {
   if (duration < 0) return
   visit.day_duration = duration
 }
+
+async function onVisitSearch(location: string) {
+  loading = true
+  await onSearch(location)
+  loading = false
+}
+
+async function onLocationKeyPress(evt: KeyboardEvent) {
+  if (evt.key === 'Enter') {
+    evt.preventDefault()
+    await onVisitSearch(visit.location)
+  }
+}
 </script>
 
 <form class="flex flex-col gap-2" onsubmit={upsertVisit}>
@@ -77,6 +90,9 @@ function onAdd(value: number) {
       type="text"
       placeholder={$t('visit-form.input-location-placeholder', { defaultValue: 'Click on the map' })}
       bind:value={visit.location}
+      onkeyup={onLocationKeyPress}
+      onkeydown={onLocationKeyPress}
+      onkeypress={onLocationKeyPress}
     />
     <button type="button" class="btn btn-xs btn-square" onclick={() => onSearch(visit.location)}>
       <Icon icon="search" _class="min-w-4 h-4 opacity-70" />

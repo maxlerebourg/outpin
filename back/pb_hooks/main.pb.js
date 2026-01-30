@@ -58,9 +58,15 @@ routerAdd(
     const lat = c.request.url.query().get('lat')
     const lng = c.request.url.query().get('lng')
     const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
-    const response = $http.send({ url, headers: { 'Accept-Language': 'en-US' } })
+    const response = $http.send({
+      url,
+      headers: {
+        'Accept-Language': 'en-US',
+        'User-Agent': 'Outpin',
+      },
+    })
     const data = response.json
-    // console.log(JSON.stringify(data, null, 1))
+    console.log(JSON.stringify(response))
     c.json(200, {
       city:  data.address?.town ?? data.address?.village ?? data.address?.municipality ?? data.address?.city,
       state: data.address?.county ?? data.address?.state ?? data.address?.suburb ?? data.address?.province,
@@ -78,9 +84,15 @@ routerAdd(
   (c) => {
     const q = c.request.url.query().get('q')
     const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&q=${q}}`
-    const response = $http.send({ url, headers: { 'Accept-Language': 'en-US' } })
+    const response = $http.send({
+      url,
+      headers: {
+        'Accept-Language': 'en-US',
+        'User-Agent': 'Outpin',
+      },
+    })
     const data = response.json?.[0] ?? {}
-    // console.log(JSON.stringify(data, null, 1))
+    console.log(JSON.stringify(response))
     c.json(200, {
       city:  data.address?.town ?? data.address?.village ?? data.address?.municipality ?? data.address?.city,
       state: data.address?.county ?? data.address?.state ?? data.address?.suburb ?? data.address?.province,

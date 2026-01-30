@@ -7,6 +7,14 @@ const zDate = () =>
       str !== '' ? new Date(str).toISOString().replace('T', ' ') : null,
     )
 
+const zPassword = () =>
+  z
+    .string('Password is required')
+    .regex(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+      'Password must be a minimum of 8 characters & contain at least one letter, one number, and one special character',
+    )
+
 const zCategoryId = () =>
   z
     .string()
@@ -15,60 +23,39 @@ const zCategoryId = () =>
     .transform((str) => (str === '__add' ? undefined : str))
 
 export const loginUserSchema = z.object({
-  email: z
-    .string({ required_error: 'Email is required' })
-    .email({ message: 'Email must be a valid email.' }),
-  password: z.string({ required_error: 'Password is required' }),
+  email: z.email('Email must be a valid email'),
+  password: z.string('Password is required'),
 })
 
 export const registerUserSchema = z.object({
-  email: z
-    .string({ required_error: 'Email is required' })
-    .email({ message: 'Email must be a valid email' }),
-  password: z
-    .string({ required_error: 'Password is required' })
-    .regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, {
-      message:
-        'Password must be a minimum of 8 characters & contain at least one letter, one number, and one special character',
-    }),
+  email: z.email('Email must be a valid email'),
+  password: zPassword(),
 })
 
 export const patchEmailSchema = z.object({
-  email: z
-    .string({ required_error: 'Email is required' })
-    .email({ message: 'Email must be a valid email' }),
+  email: z.email('Email must be a valid email'),
 })
 
 export const patchUsernameSchema = z.object({
   username: z
-    .string({ required_error: 'Username is required' })
-    .min(3, { message: 'Username must be at least 3 characters' })
-    .max(24, { message: 'Username must be 24 characters or less' })
-    .regex(/^[a-zA-Z0-9]*$/, {
-      message: 'Username can only contain letters or numbers',
-    }),
+    .string('Username is required')
+    .min(3)
+    .max(24)
+    .regex(/^[a-zA-Z0-9]*$/, 'Username can only contain letters or numbers'),
 })
 
 export const patchPasswordSchema = z.object({
-  oldPassword: z.string({ required_error: 'Old password is required' }),
-  password: z
-    .string({ required_error: 'Password is required' })
-    .regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, {
-      message:
-        'Password must be a minimum of 8 characters & contain at least one letter, one number, and one special character',
-    }),
+  oldPassword: z.string('Old password is required'),
+  password: zPassword(),
 })
 
 export const postCategorySchema = z.object({
-  display_name: z
-    .string({ required_error: 'Name is required' })
-    .min(3)
-    .max(200),
+  display_name: z.string('Name is required').min(3).max(200),
   icon: z.string().min(1).max(4).nullable(),
 })
 
 export const postAdventureSchema = z.object({
-  name: z.string({ required_error: 'Name is required' }).min(3).max(200),
+  name: z.string('Name is required').min(3).max(200),
   description: z.string().nullable(),
   start_date: zDate().nullable(),
   rating: z.number().min(0).max(5).nullable(),
@@ -77,11 +64,7 @@ export const postAdventureSchema = z.object({
 
 export const patchAdventureSchema = z.object({
   id: z.string().min(1).max(200),
-  name: z
-    .string({ required_error: 'Name is required' })
-    .min(3)
-    .max(200)
-    .optional(),
+  name: z.string('Name is required').min(3).max(200).optional(),
   start_date: zDate().nullable().optional(),
   description: z.string().nullable().optional(),
   rating: z.number().min(0).max(5).nullable().optional(),
@@ -95,10 +78,7 @@ export const postVisitSchema = z.object({
   notes: z.string().min(3).nullable(),
   latitude: z.number(),
   longitude: z.number(),
-  location: z
-    .string({ required_error: 'Location is required' })
-    .min(3)
-    .max(200),
+  location: z.string('Location is required').min(3).max(200),
   rating: z.number().min(0).max(5).nullable(),
   order: z.number().min(0).max(100),
 })
@@ -111,11 +91,7 @@ export const patchVisitSchema = z.object({
   notes: z.string().min(3).nullable().optional(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
-  location: z
-    .string({ required_error: 'Location is required' })
-    .min(3)
-    .max(200)
-    .optional(),
+  location: z.string('Location is required').min(3).max(200).optional(),
   rating: z.number().min(0).max(5).nullable().optional(),
   order: z.number().min(0).max(100).optional(),
 })
