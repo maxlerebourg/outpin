@@ -34,7 +34,7 @@ onMount(load)
 onDestroy(currentUserUnsubscribe)
 </script>
 
+<NavBar />
 <main>
-	<NavBar />
 	{@render children?.()}
 </main>

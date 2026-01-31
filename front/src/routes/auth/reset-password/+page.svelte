@@ -10,7 +10,7 @@ let errors = $state<Partial<Auth>>()
 </script>
 
 <form
-  class="card max-w-sm sm:mt-10 mx-auto transition-all duration-300 ease-in-out"
+  class="card"
   onsubmit={async (evt: Event) => {
     evt.preventDefault()
     loading = true
