@@ -40,17 +40,17 @@ onMount(() => {
 </script>
 
 <MapLibre
-	style="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
-	class="relative w-full h-[calc(100vh-64px)]"
-	standardControls="top-right"
-	center={initCenter}
-	zoom={5}
+  style="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
+  class="relative w-full h-[calc(100vh-64px)]"
+  standardControls="top-right"
+  center={initCenter}
+  zoom={5}
 >
-	<ClusterMarker {center} {onMoveEnd}  />
-	<MapEvents onclick={addMarker} />
-	{#if marker}
+  <ClusterMarker {center} {onMoveEnd} />
+  <MapEvents onclick={addMarker} />
+  {#if marker}
 		<Marker lngLat={marker.lngLat} class="z-10 text-info flex justify-center items-center -translate-y-4">
 			<Icon icon="location" _class="h-8 w-8" onClick={() => onMarkerChange(marker.lngLat)} />
-		</Marker>
-	{/if}
+    </Marker>
+  {/if}
 </MapLibre>

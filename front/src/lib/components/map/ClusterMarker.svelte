@@ -20,13 +20,12 @@ let { center, onMoveEnd } = $props<{
   onMoveEnd: (e: LngLat) => void
 }>()
 
-let innerFeaturesPromise = $derived.by(async () => {
-  if (!map) return {}
+function computeFeatures(adventures: Adventure[]) {
   const featureLines: any[] = []
   const featurePoints: any[] = []
-  adventures.map((adventure) => {
+  adventures.forEach((adventure) => {
     const visits: Visit[] = adventure?.visits ?? []
-    visits.map((visit, i) => {
+    visits.forEach((visit, i) => {
       if (!visit.longitude || !visit.latitude) return
       featurePoints.push({
         type: 'Feature',
@@ -64,14 +63,19 @@ let innerFeaturesPromise = $derived.by(async () => {
     })
   })
   return { featureLines, featurePoints }
-})
+}
+
+let lines = $state<any>({ type: 'FeatureCollection', features: [] })
+let points = $state<any>({ type: 'FeatureCollection', features: [] })
+let adventures = $state<Adventure[]>([])
 
 $effect(() => {
-  innerFeaturesPromise.then((f) => {
-    lines.features = f.featureLines ?? []
-    points.features = f.featurePoints ?? []
-  })
+  if (!map) return
+  const { featureLines, featurePoints } = computeFeatures(adventures)
+  lines = { type: 'FeatureCollection', features: featureLines }
+  points = { type: 'FeatureCollection', features: featurePoints }
 })
+
 $effect(() => {
   if (!center) return
   map?.flyTo({ center })
@@ -81,9 +85,6 @@ function onMove() {
   onMoveEnd(map?.getCenter())
 }
 
-let lines = $state<any>({ type: 'FeatureCollection', features: [] })
-let points = $state<any>({ type: 'FeatureCollection', features: [] })
-let adventures = $state<Adventure[]>([])
 const adventuresUnsubscribe = adventuresStore.subscribe((v) => {
   adventures = v
 })
@@ -124,7 +125,7 @@ onDestroy(adventuresUnsubscribe)
       </div>
       <Popup openOn="click" offset={[0, -10]}>
         <h3 class="text-lg text-black font-bold" title={visit.location}>
-          {`${visit.location?.slice(0,20)}${(visit.location?.length ?? 0) > 20 ? '...' : ''}`}
+          {`${visit.location?.slice(0, 20)}${(visit.location?.length ?? 0) > 20 ? '...' : ''}`}
         </h3>
         {#if visit.rating}
           <Rating id="disabled-visit-rating" disabled={true} value={visit.rating} />

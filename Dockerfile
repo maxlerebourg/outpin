@@ -1,6 +1,6 @@
 FROM alpine AS builder
 
-ARG PB_VERSION=0.36.1
+ARG PB_VERSION=0.39.5
 ARG TARGETARCH
 
 RUN apk add --no-cache \
